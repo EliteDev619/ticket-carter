@@ -1,0 +1,2460 @@
+<!DOCTYPE html>
+<!-- Copyright � Paciolan, Inc. All rights reserved. -->
+<!-- EVError.html -->
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+
+ <!-- Version w05.221129 -->
+
+<!-- (captcha/pleasewait lightbox) -->
+
+<!-- 1= on, 0= off -->
+<!-- lbCaptcha = 1 -->
+<!-- END (captcha/pleasewait lightbox) -->
+
+<!-- replaces above for temporary password -->
+
+
+<!-- custom folder path -->
+
+
+<!-- shared folder path -->
+
+
+<!-- ****************************************
+        default settings
+        (to be overwritten in _env.inc)
+***************************************** -->
+
+        <!-- environment (options: "staging" or "") -->
+
+
+        <!-- title -->
+
+
+        <!-- main page (options: mint, chocolate, skip) -->
+
+
+        <!-- groupList: root group code (group to show "my account" link) -->
+
+
+        <!-- groupList (options: chocolate, mint) -->
+
+
+        <!-- mint groupList only (options: whole number) -->
+
+
+        <!-- mini calendar calendar show group name (options: true or false) -->
+
+
+        <!-- eventList (options: chocolate, mint) -->
+
+
+        <!-- mint eventList only (options: whole number) -->
+
+
+        <!-- calendar page (options: chocolate, mint) -->
+
+
+        <!-- eventInfo (options: rsd, chocolate, mint, vanilla) -->
+
+
+        <!-- eventInfo event details module (options: TOP, PANEL) -->
+
+
+        <!-- eventInfo forms message format, applies to module TOP only (options: standard, button, scrolling) -->
+
+
+        <!-- eventInfo: promo code for ada module -->
+
+
+        <!-- designer series: flag to display logos -->
+
+
+        <!-- login page (options: "" or "minimal") -->
+
+
+    <!-- EV-16179 login method for login widget (options: "dropdown" or "lightbox"). This only applies on netCommerce pages-->
+
+
+        <!-- group sales discount (options: "" or "yes") -->
+
+
+        <!-- PYO Version Default -->
+
+
+
+        <!-- StubHub SoldOut On / Off -->
+
+
+        <!-- SLP Popup Message -->
+        <!-- NOTE: any attribute must be written with single quotes -->
+
+
+    <!-- Accessible Seating Text: eventinfo page -->
+
+
+        <!-- tax module EV-1164 -->
+
+
+        <!-- commonLibPath - this is the new media server on s3 with versioning -->
+
+
+        <!-- mediaPath - old media server files migrated to s3 (no versioning) -->
+
+
+    <!-- EV-16220 -->
+
+
+                <!-- Path to dist folder for Seatmap bundle remove the x_ when ready to turn on -->
+
+
+
+    <!-- dual branding EV-1347 -->
+
+
+<!-- ****************************************
+        END default settings
+***************************************** -->
+
+<!-- environment (options: "staging" or "") -->
+
+
+<!-- design version -->
+
+
+<!-- title -->
+
+
+<!-- main page (options: mint, chocolate, skip) -->
+
+
+<!-- groupList: root group code (group to show "my account" link) -->
+
+
+<!-- groupList (options: chocolate, mint) -->
+
+
+<!-- mint groupList only (options: whole number) -->
+
+
+<!-- mini calendar calendar show group name (options: true or false) -->
+
+
+<!-- eventList (options: chocolate, mint) -->
+
+
+<!-- mint eventList only (options: whole number) -->
+
+
+<!-- calendar page (options: chocolate, mint) -->
+
+
+<!-- eventInfo (options: rsd, chocolate, mint, vanilla) -->
+
+
+<!-- eventInfo event details module (options: TOP, PANEL) -->
+
+
+<!-- eventInfo forms message format, applies to module TOP only (options: standard, button, scrolling) -->
+
+
+<!-- eventInfo: promo code for ada module -->
+
+
+<!-- designer series: flag to display logos -->
+
+
+<!-- login page (options: "" or "minimal") -->
+
+
+<!-- group sales discount (options: "" or "yes") -->
+
+
+<!-- Facebook metadata image -->
+
+
+
+
+
+
+
+        <script type="text/javascript">
+                if(sessionStorage.getItem("ev_ENV") !== null) {
+                        sessionStorage.removeItem("ev_ENV");
+                }
+        </script>
+
+
+
+
+<!-- timestamp for cache busting controllable via skin version -->
+
+
+
+                <script language="JavaScript">
+        <!--
+
+
+
+function timerDisplay_(formNumber) {
+        var remaining = eval("document.timerForm"+formNumber+"_.seconds.value") ;
+        var min = Math.floor(remaining / 60) ;
+        var sec = Math.floor(remaining - (min * 60)) ;
+        var time = "" ;
+
+        if(min < 10) time = "0" ;
+        time += min + ":" ;
+        if(sec < 10) time += "0" ;
+        time += sec ;
+
+        timerCountdown_(formNumber) ;
+
+        return time ;
+}
+
+function timerCountdown_(formNumber) {
+        if(Number(eval("document.timerForm"+formNumber+"_.seconds.value")) > 1)
+                eval("document.timerForm"+formNumber+"_").seconds.value -= 1 ;
+        else
+        {
+                clearInterval(timerID) ;
+                timerSubmit_(formNumber) ;
+        }
+}
+
+function timerInit_(cartListItem, formNumber) {
+        eval("document.timerForm"+formNumber+"_.cartNum").value = cartListItem.cart.number ;
+        eval("document.timerForm"+formNumber+"_.seconds").value = cartListItem.cart.expire ;
+}
+
+function timerSubmit_(formNumber) {
+        eval("document.timerForm"+formNumber+"_").submit() ;
+}
+
+
+function Timer(cartListItem, formNumber) {
+        var formName = "timerForm" + formNumber + "_" ;
+        document.write(
+                '<form name="', formName, '" action="/cgi-bin/ncommerce3/SEUpdateCart" method="post">',
+                        ' <input type="hidden" name="returnUrl" value="/cgi-bin/ncommerce3/SEGetGroupList?linkID=tktldr&shopperContext=">',
+                ' <input type="hidden" name="cartNum" value="">',
+                ' <input type="hidden" name="linkID" value="tktldr">',
+                ' <input type="hidden" name="after" value="error">',
+                ' <input type="hidden" name="remove" value="expired">',
+                ' <input type="hidden" name="seconds" value="">',
+                ' <input type="hidden" name="delMode" value="">',
+                '</form>'
+        ) ;
+
+        this.display = timerDisplay_ ;
+        this.submit = timerSubmit_ ;
+        timerInit_(cartListItem, formNumber) ;
+}
+
+function Timer_ajax(cartListItem, formNumber, sharedCartId, evrxOrderId) {
+        console.log("Inside Timer_ajax with " + sharedCartId + " and " + evrxOrderId);
+        var formName = "timerForm" + formNumber + "_" ;
+        jQuery("body").append(
+                '<form name="'+ formName+ '" action="/cgi-bin/ncommerce3/SEUpdateCart" method="post">'+
+                        ' <input type="hidden" name="returnUrl" value="/cgi-bin/ncommerce3/SEGetGroupList?linkID=tktldr&shopperContext=">'+
+                ' <input type="hidden" name="cartNum" value="">'+
+                ' <input type="hidden" name="linkID" value="tktldr">'+
+                ' <input type="hidden" name="after" value="error">'+
+                ' <input type="hidden" name="remove" value="expired">'+
+                ' <input type="hidden" name="seconds" value="">'+
+                ' <input type="hidden" name="delMode" value="">'+
+                ' <input type="hidden" name="sharedCartId" value="'+sharedCartId+'">'+
+                ' <input type="hidden" name="evrxOrderId" value="'+evrxOrderId+'">'+
+                '</form>'
+        ) ;
+
+        this.display = timerDisplay_ ;
+        this.submit = timerSubmit_ ;
+        timerInit_(cartListItem, formNumber) ;
+}
+
+        //-->
+        </script>
+
+
+
+<script language="JavaScript">
+<!--
+        function makeCart(number, shrfnbr, invNum, orrfnbr, maxItems, cookie, expire, cusellmsg, id, status,payCode,shopperContext,isPK,fingerprint,fingerprintID,payerAuth, eOrder) {
+                this.number = number ;
+                this.shrfnbr = shrfnbr ;
+                this.invNum = invNum ;
+                this.orrfnbr = orrfnbr ;
+                this.maxItems = maxItems ;
+                this.cookie = cookie ;
+                this.expire = expire ;
+                this.cusellmsg = cusellmsg ;
+                this.id = id ;
+                this.status = status;
+                this.payCode = payCode;
+                this.shopperContext = shopperContext;
+                this.isPK = isPK;
+                this.fingerprint = fingerprint;
+                this.fingerprintID = fingerprintID;
+                this.payerAuth = payerAuth;
+                this.eOrder = eOrder;
+        }
+//-->
+</script>
+
+
+
+
+
+
+
+
+                        <!-- The version of current netcommerce release is '8.06.015' -->
+
+
+
+
+
+
+
+
+                                <script language="JavaScript">
+                <!--
+                        function makeShopper(type) {
+                                this.type = type ;
+                        }
+                                shopper = new makeShopper("G") ;
+                //-->
+                </script>
+
+
+
+                        <!-- Shopper Information for selection where SHRFNBR = 7440180 not available  -->
+                        <script language="JavaScript">
+                        <!--
+                        function makeRegShopperInfo(number, email, password, profile, account, pin, first, last, company, isStudent, emailOptin, isHTML, mobileOptin, dnURL, ccType, ccNum, ccMonth, ccYear, timestamp, hashCode) {
+                                this.number   = number;
+                                this.email    = email;
+                                this.password = password;
+                                this.profile  = profile;
+                                this.account  = account;
+                                this.pin      = pin;
+                                this.first    = first;
+                                this.last     = last;
+                                this.company  = company;
+                                this.isStudent  = isStudent;
+                                this.emailOptin  = emailOptin;
+                                this.isHTML  = isHTML;
+                                this.mobileOptin  = mobileOptin;
+                                this.dnURL  = dnURL;
+                                this.ccType  = ccType;
+                                this.ccNum  = ccNum;
+                                this.ccMonth  = ccMonth;
+                                this.ccYear  = ccYear;
+                                this.timestamp  = timestamp;
+                                this.hashCode  = hashCode;
+                        }
+                                var shopperInfo = new makeRegShopperInfo("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+
+                        //-->
+                        </script>
+
+
+
+                        <!-- Shopper retrieval error for session 47f4b4a031b8b0f8 100 -->
+                        <script language="javascript">
+                        <!--
+                                function makeNCShopper() {
+                                        this.name   = "" ;
+                                        this.fname  = "" ;
+                                        this.lname  = "" ;
+                                        this.addr1  = "" ;
+                                        this.addr2  = "" ;
+                                        this.addr3  = "" ;
+                                        this.city   = "" ;
+                                        this.state  = "" ;
+                                        this.zip    = "" ;
+                                        this.email  = "" ;
+                                        this.phone  = "" ;
+                                        this.ephone = "" ;
+                                }
+                                NCShopper = new makeNCShopper();
+                        //-->
+                        </script>
+
+                                <script language="JavaScript">
+                <!--
+                        function makeRegAdmin(showLink, loginMode, updateMode) {
+                                this.invNum = "1013";
+                                this.showLink = showLink;
+                                this.loginMode = loginMode;
+                                this.autoAccountUpdate = updateMode;
+                        }
+                        regAdminInfo = new makeRegAdmin("0", "R", ("1"=="1"));
+
+                //-->
+                </script>
+
+
+
+
+
+                <!-- no carts in any inventory for shopper '7440180' 100 -->
+                <script language="JavaScript">
+                <!--
+                        cartList = new Array ;
+                        cartList[0] = new Object ;
+                        cartList[0].cart = new makeCart("", "7440180", "1013", "", "", "0", "", "", "tktldr", "","","","","","","","") ;
+                        cartL
+ist[0].linkID = "tktldr" ;
+                        cartList[0].description = "" ;
+                        cartList[0].url = "" ;
+                        cart = new Object ;
+                        cart = cartList[0].cart ;
+                //-->
+                </script>
+
+
+                <!-- no pending pk item in any inventory for shopper '7440180' 100 -->
+                <script language="JavaScript">
+                <!--
+                        pkItemOnBuild = new Array ;
+                        pkItemOnBuild[0] = new Object;
+                        pkItemOnBuild[0].pkNum = "";
+                        pkItemOnBuild[0].pkUrl = "";
+                //-->
+                </script>
+
+                            <script language="JavaScript">
+                        var propertyList = new Array;
+
+                        function hasProperty(property) {
+                                return typeof(propertyList[property]) != "undefined";
+                        }
+
+                        function getPropertyValue(property) {
+                            return hasProperty(property) ? propertyList[property] : "";
+                        }
+
+            propertyList["reg"] = "1";
+            propertyList["reg.autoAccountUpdate"] = "1";
+            propertyList["reg.description"] = "Online Registration";
+            propertyList["reg.emailOptInText"] = "I would like to receive e-mail updates from Ticketleader.";
+            propertyList["reg.integratedPatron"] = "0";
+            propertyList["reg.mobileOptInText"] = "Enter your mobile phone information to receive text messages & updates from Ticketleader when they become available.";
+            propertyList["reg.mode"] = "R";
+            propertyList["reg.timeZoneName"] = "America/Los_Angeles";
+            propertyList["reg.timeZoneOffsetMin"] = "-480";
+            propertyList["reg.tsBillAddr"] = "tb";
+            propertyList["reg.tsPhoneDay"] = "td";
+            propertyList["reg.tsPhoneEvening"] = "te";
+            propertyList["sr"] = "1";
+            propertyList["sr.description"] = "SeasonRenewals";
+            propertyList["ss.activateAccountValidation"] = "NONE";
+            propertyList["ts"] = "1";
+            propertyList["ts.accesscontrol"] = "0";
+            propertyList["ts.accessibilityLink"] = "0";
+            propertyList["ts.ccTypeCount"] = "3";
+            propertyList["ts.ccTypes"] = "V,M,A";
+            propertyList["ts.CCSplitPayEnabled"] = "1";
+            propertyList["ts.description"] = "Online Ticketing";
+            propertyList["ts.gift"] = "0";
+            propertyList["ts.GetGCBalance"] = "0";
+            propertyList["ts.oh"] = "1";
+            propertyList["ts.pah"] = "1";
+            propertyList["ts.pah.allowEmailDelivery"] = "1";
+            propertyList["ts.pp"] = "0";
+            propertyList["ts.presale"] = "0";
+            propertyList["ts.promo"] = "1";
+            propertyList["ts.publicProfileCode"] = "GEN";
+            propertyList["ts.pyos"] = "1";
+            propertyList["ts.rsd"] = "0";
+            propertyList["ts.seatGroupMax"] = "";
+            propertyList["ts.tcaiFlag"] = "1";
+                        </script>
+
+                <script language="JavaScript">
+                <!--
+                        var returnURL = window.location.host + window.location.pathname + window.location.hash + window.location.search;
+
+                        if (window.location.pathname.indexOf("OrderWait.d2w") != -1)
+                        {
+                                returnURL = window.location.host + "/cgi-bin/ncommerce3/SEGetEventList" + window.location.hash + window.location.search;
+                        }
+                        else
+                        {
+                                returnURL = window.location.host + window.location.pathname + window.location.hash + window.location.search;
+                        }
+                        var httpURL   = escape("http://" + returnURL);
+                        var httpsURL  = escape("https://" + returnURL);
+
+                        var common = new Object;
+                        common.home = "/evenue/evenue15/se/";
+                        common.help = "http://robohelp.paciolan.com/robo/projects/evenue/evenue.htm";
+                        common.main = "/cgi-bin/ncommerce3/EVExecMacro";
+                        common.se = "/" + "cgi-bin/ncommerce3/SEGetGroupList";
+                        common.dp = "/" + "cgi-bin/ncommerce3/DPLanding";
+                        common.dpp = "/www/ev_tktldr/ss/ev/Donate";
+                        common.dpc = "/" + "cgi-bin/ncommerce3/SEUpdateCart";
+                        common.sr = "/" + "cgi-bin/ncommerce3/GetApps";
+                        common.login = "/cgi-bin/ncommerce3/EVExecMacro";
+                        common.logout = "/cgi-bin/ncommerce3/REGLogoff";
+                        //common.myAccount = "/cgi-bin/ncommerce3/EVExecMacro";
+                        //common.myAccount = "/www/ss/evenue/#MyAccount";
+                        common.myAccount = "/www/ev_tktldr/ss/evenue/?p=1#EvNavigation";
+                        common.cart = "/" + "cgi-bin/ncommerce3/SECartRedisplay";
+                        common.pageName = "EVError.html";
+                        common.hasCart = cart.number != "" && cart.expire > 0 && cart.status != "C" && cart.isPK != "1";
+                        common.returnURL = escape(window.location);
+                        common.isStudent = ("0" == "1");
+
+                        common.presale = "/" + "cgi-bin/ncommerce3/PPUpdateSysConfig" + "?linkID=tktldr&RSRC=&RDAT=&caller=PS&failureURL=" + httpURL;
+                        common.promo = "/cgi-bin/ncommerce3/EVExecMacro";
+                        common.accessibility = "/cgi-bin/ncommerce3/EVExecMacro";
+
+                        common.gc = "/cgi-bin/ncommerce3/SEGetGroupList";
+
+                        common.search = "/cgi-bin/ncommerce3/EVExecMacro";
+
+                                common.loggedIn = false;
+
+                        function confirmLogOut()
+                        {
+                                if (!common.hasCart) return true;
+                                return confirm( "You have reservations in your shopping cart." +
+                                                " If you logout, these reservations will be released. Do you really want to logout?");
+                        }
+
+                        function setNavigateReturnURL(url) {
+                                pos = url.indexOf("://");
+                                if(pos >= 0)
+                                {
+                                        // remove leading http(s)://
+                                        url = url.substr(pos+3);
+                                }
+                                if(url.indexOf("/") == 0)
+                                {
+                                        httpURL   = escape(url);
+                                        httpsURL  = escape(url);
+                                } else {
+                                        httpURL   = escape("http://" + url);
+                                        httpsURL  = escape("https://" + url);
+                                }
+                                common.returnURL = escape(url);
+                        }
+
+                        function splitURL(returnURL)
+                        {
+                                if(returnURL.indexOf(escape(escape("&shopperContext=ST"))) == -1)
+                                {
+                                        var splittedURL = returnURL.split(escape("url="));
+                                        if(splittedURL.length > 1)
+                                        {
+                                                var newURL ="";
+                                                for(var i=1;i<splittedURL.length ;i++ ) newURL+=splittedURL[i];
+                                                return unescape(newURL);
+                                        }
+                                        else
+                                                return returnURL;
+                                }
+                                else
+                                {
+                                        return escape(common.login);
+                                }
+                        }
+
+
+                        function createNavigateHref(action) {
+                                navHref = "";
+
+                                if(action == "HOME")
+                                {
+                                        navHref = common.home;
+                                }
+                                else if(action == "MAIN")
+                                {
+                                        navHref = common.main + "?linkID=tktldr&evm=main";
+                                }
+                                else if(action == "SE")
+                                {
+                                        navHref = common.se + "?linkID=tktldr&groupCode=&RSRC=&RDAT=&url=" + httpURL;
+                                }
+                                else if(action == "DPP")
+                                {
+                                        //Donation Processing
+                                        navHref = common.dpp + "?siteId=ev_tktldr&linkID=tktldr&locale=en_US";
+                                }
+                                else if(action == "DPC")
+                                {
+                                        var evurl = encodeURIComponent("http://" + window.location.host + "/cgi-bin/ncommerce3/EVExecMacro?linkID=tktldr&evm=main");
+                                        var pac8url  = encodeURIComponent("https://" + window.location.host + "/www/ev_tktldr/ss/ev/Donate?siteId=ev_tktldr&linkID=tktldr&locale=en_US");
+                                        navHref = common.dpc + "?cartNum=" + cart.number + "&remove=all&after=stay&linkID=tktldr&url=" + evurl + "&pUrl=" + pac8url;
+                                }
+                                else if(action == "DP")
+                                {
+                                        //Donation Processing
+                                        navHref = common.dp + "?linkID=tktldr&RSRC=&RDAT=&url=" + httpsURL;
+                                }
+                                else if(action == "SS")
+                                {
+                                        //Student Sales
+                                        navHref = common.se + "?linkID=tktldr&groupCode=&RSRC=&RDAT=&url=" + httpURL + "&shopperContext=ST";
+                                }
+                                else if(action == "SR")
+                                {
+                                        if(regAdminInfo.loginMode != "D" && "tktldr" != "")
+                                        {
+                                                navHref = common.sr + "?linkID=tktldr&RSRC=&RDAT=&linkSource=SR&caller=appList";
+                                        }
+                                }
+                                else if(action == "ACCOUNT")
+                                {
+                                        if(regAdminInfo.loginMode != "D" && common.loggedIn)
+                                        {
+                                                //navHref = common.myAccount + "?linkID=tktldr&evm=myac&RSRC=&RDAT=&url=" + httpsURL;
+                                                navHref = common.myAccount + "?linkID=tktldr&siteId=ev_tktldr&locale=en_US";
+                                        }
+                                }
+                                else if(action == "CART")
+                                {
+                                        if(common.hasCart)
+                                        {
+                                                navHref = common.cart + "?linkID=tktldr&RSRC=&RDAT=&cartNum=" + cart.number;
+                                        }
+                                }
+                                else if(action == "LOGIN")
+                                {
+                                        if(regAdminInfo.loginMode != "D" && ! common.loggedIn)
+                                        {
+                                                URL_ = unescape(splitURL(httpsURL));
+                                                if(URL_.indexOf("?") == -1)
+                                                {
+                                                        URL_ = "https://" + window.location.host + common.main;
+                                                }
+                                                navHref = common.login + "?linkID=tktldr&evm=myac&entry=" + common.pageName + "&url=" + escape(URL_);
+                                                if(common.pageName == "CartDisplay.html" || common.pageName == "OrderConfirmation.html")
+                                                {
+                                                        navHref += "&RSRC=&RDAT=&cartNum=" + cart.number;
+                                                }
+                                        }
+                                        }
+                                else if(action == "LOGOUT")
+                                {
+                                        if(regAdminInfo.loginMode != "D" && common.loggedIn)
+                                        {
+                                                //navHref = common.logout + "?linkID=tktldr&RSRC=&RDAT=&url=" + "http://" + window.location.host + escape("/cgi-bin/ncommerce3/EVExecMacro?linkID=tktldr&evm=regl");
+                                                var urlV = "https://" + window.location.host + "/cgi-bin/ncommerce3/ExecMacro/evenue/ev69/core/ssoio.d2w/report?linkID=" + 'tktldr' + "&isSignin=0&url=" + escape("https://" + window.location.host
+ + "/cgi-bin/ncommerce3/EVExecMacro?linkID=tktldr&evm=regl&cn="+shopperInfo.account);
+                                                navHref = common.logout + "?linkID=tktldr&RSRC=&RDAT=&url=" + escape(urlV);
+                                        }
+                                }
+                                else if(action == "PROMO")
+                                {
+                                        navHref = common.promo + "?linkID=tktldr&evm=prmo&RSRC=&RDAT=&caller=PR";
+                                }
+                                else if(action == "PRESALE")
+                                {
+                                        //Go to the page where the user inputs the promo code
+                                        navHref = common.presale;
+                                }
+                                else if(action == "ACCESSIBILITY")
+                                {
+                                        //Go to the page where the user inputs the accessible seating request info
+                                        navHref = common.accessibility + "?linkID=tktldr&evm=seac&url=" + httpURL;
+                                }
+                                else if(action == "GC")
+                                {
+                                        if(common.isStudent)
+                                        {
+                                                navHref = common.gc + "?linkID=tktldr&groupCode=&RSRC=&RDAT=&caller=GC&shopperContext=ST&url=" + httpURL;
+                                        }
+                                        else
+                                        {
+                                                navHref = common.gc + "?linkID=tktldr&groupCode=&RSRC=&RDAT=&caller=GC&url=" + httpURL;
+                                        }
+                                }
+                                else if(action == "SEARCH")
+                                {
+                                        navHref = common.search + "?linkID=tktldr&evm=setx&RSRC=&RDAT=" + ((common.isStudent) ? "&shopperContext=ST" : "");
+                                }
+                                else if(action == "HELP")
+                                {
+                                        navHref = common.help;
+                                }
+                                return navHref;
+                        }
+                //-->
+                </script>
+
+
+
+
+
+                <!-- no carts in any inventory for shopper '7440180' 100 -->
+                <script language="JavaScript">
+                <!--
+                        cartList = new Array ;
+                        cartList[0] = new Object ;
+                        cartList[0].cart = new makeCart("", "7440180", "1013", "", "", "0", "", "", "tktldr", "","","","","","","","") ;
+                        cartList[0].linkID = "tktldr" ;
+                        cartList[0].description = "" ;
+                        cartList[0].url = "" ;
+                        cart = new Object ;
+                        cart = cartList[0].cart ;
+                //-->
+                </script>
+
+                <script language="JavaScript">
+        <!--
+                function makeErr() {
+                        this.msg = "Unable to get item information 5365314" ;
+                        this.param = "SQL" ;
+                        this.url = "/evenue/evenue15/se/" ;
+                }
+                error = new makeErr() ;
+        //-->
+        </script>
+
+<!-- everror.html -->
+<head>
+<script type="text/javascript">
+    (function(){
+        var p = document.getElementsByTagName('script')[0],
+            s = document.createElement('script');
+            s.async = 1;
+            s.src = '/txBsu81H/init.js';
+            p.parentNode.insertBefore(s,p);
+    }());
+
+    window._pxMonitorAbr = true;
+</script>
+<title>Tickets for Concerts, Sports, Shows and Family Events in Vancouver BC | TicketLeader.ca | Online Ticket Office | Sorry</title>
+
+<script type="text/javascript">
+
+        var navHead = "Sorry";
+
+// reload site code - part 1 of 2
+        function timedRefresh(timeoutPeriod) {
+                setTimeout("location.reload(true);",timeoutPeriod);
+        }
+
+        // (captcha/pleasewait lightbox)
+        if(top.location!=document.location) {
+                location.replace("/evenue/evenue15/core/error.html?entry="+ common.pageName +"&msg="+ encodeURIComponent(error.msg) +"&url="+ encodeURIComponent(error.url));
+        }
+        // END (captcha/pleasewait lightbox)
+
+</script>
+
+<!-- Closing head tag and body tag are included in the banner file -->
+<META http-equiv="cache-control" content="no-cache" />
+<META http-equiv="pragma" content="no-cache" />
+<META http-equiv="expires" content="-1" />
+
+
+<!-- For responsive view -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- no robots for HIDDEN -->
+<!-- "" -->
+
+
+<!-- Init info -->
+
+
+
+
+<!-- EV-16215, Meta description -->
+
+<meta name="description" content="Tickets for Concerts, Sports, Shows and Family Events in Vancouver BC | TicketLeader.ca">
+
+<!-- Set urls -->
+
+<!-- Facebook Meta tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Tickets for Concerts, Sports, Shows and Family Events in Vancouver BC | TicketLeader.ca" />
+<meta property="og:description" content="Online Ticket Office" />
+
+<!-- Twitter Meta tags -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="Tickets for Concerts, Sports, Shows and Family Events in Vancouver BC | TicketLeader.ca" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/Spectra_Logo/logo.css">
+<link rel="stylesheet" type="text/css" media="screen" href="/www/ev_tktldr/ss/evenue/customize/shared/css/bootstrap.min.css">
+<!---EV16190 DISC56--->
+<link rel="stylesheet" type="text/css" media="screen" href="/www/ev_tktldr/ss/evenue/customize/shared/css/search_module.css">
+<link rel="stylesheet" type="text/css" media="screen" href="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/css/skin.css?skin=01">
+<link rel="stylesheet" type="text/css" media="print" href="/www/ev_tktldr/ss/evenue/customize/shared/css/print.css">
+<link rel="stylesheet" href="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/fonts/font-awesome/css/font-awesome.min.css">
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="/www/ev_tktldr/ss/evenue/customize/shared/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+
+<script
+  src="/www/ev_tktldr/ss/evenue/customize/shared/js/jquery/1.11.1/jquery.min.js"
+  type="text/javascript"></script>
+
+<script type="text/javascript">
+
+        var imageWWWPath = "/evenue/evenue15/images";
+        var seWWWPath = "/evenue/evenue15/se";
+        var coreWWWPath = "/evenue/evenue15/core";
+        var macroPath = "ev69";
+        var linkID = "tktldr";
+        var siteID = "ev_tktldr";
+        var dataAccId = "";
+
+        // INV-750 (Make dataAccId available on cartdisplay.html)
+        if (dataAccId === '') {
+                dataAccId = "";
+        }
+
+        var locale = "en_US";
+        var customerCode = "";
+        var phoneNumber = "";
+        var styleWWWPath = "/evenue/evenue15/stylesheets";
+        if(typeof(pageName)=="undefined") var pageName = (common.pageName!="" ? common.pageName : "EVError.html");
+        var ev_iprofile = (shopperInfo.profile != "GEN" ? shopperInfo.profile : "");
+        var netCommerceVer = "8.06.015";
+        var scriptPac72Path = "/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script";
+        var imagePac72Path = "/www/ev_tktldr/ss/evenue/customize/ev_tktldr/images";
+        var rootPac72Path = "/www/ev_tktldr/ss/evenue/customize/ev_tktldr";
+    var pac72SharedPath = "/www/ev_tktldr/ss/evenue/customize/shared";
+    var mediaPath = "https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts";
+    var commonLibPath = 'https://pac-media.s3-us-west-2.amazonaws.com/common';
+        var dst = "";
+    var unskinned = ""; /* custom scheme */
+    var helpAWSPath = "https://pachtml-production.s3-us-west-2.amazonaws.com/global/nc_help"; // EV-16220
+
+    //EV-16179 login method and LB sign-in method defaults
+    var loginMethod = "dropdown";
+    var lightboxLoginMethodOptions = {
+        logoSrc: imagePac72Path+"/logos/na.gif",
+        acct: "Email / Account #",
+        pwd: "Password",
+        forgotPwd: "Forgot Password?",
+        login: "Login",
+        register: "New User",
+        activate: "Activate Your Account",
+        hideLogo: false,
+        hideActivate: false,
+        hideRegister: false,
+    };
+
+        document.writeln('<img alt="" src="/www/ev_tktldr/ss/evenue/common/images/1x1.png?',(new Date()).getTime(),'" style="position: absolute; top: -100px;" />');
+
+        var timerDisplayed = 0;
+
+        var todayDate = new Date();
+    var zerotimetext = "time TBA";  // variable used in function timeFormat
+
+        // load jQuery library
+        if(typeof(jQuery) === 'undefined'){
+                document.write(unescape("%3Cscript crossorigin='anonymous' integrity='sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=' src='//code.jquery.com/jquery-1.12.4.min.js' type='text/javascript'%3E%3C/script%3E"));
+        }
+
+</script>
+
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/global/global_functions.min.js?timestamp=01_20221230"></script>
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/AWSContent.js?ev_version=05.221129"></script>
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/netCommerce/netcommerce_functions.js?timestamp=01_20221230"></script>
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/functions.js?ev_version=05.221129"></script>
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/netCommerce/functions-color.js?ev_version=05.221129"></script>
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/netCommerce/functions-staticmaps.js"></script>
+<script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/lbModal.js?ev_version=05.221129"></script>
+
+        <script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/evModal.js?ev_version=05.221129"></script>
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/jquery/jquery.cookie.js"></script>
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/integration.js?ev_version=05.221129"></script>
+
+<script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/siteConfig.js?ev_version=05.221129"></script>
+
+<!-- New Modal, Bootstrap core: DO NOT REMOVE - part 1 -->
+<s
+cript type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/bootstrap/bootstrap.min.js"></script>
+
+<!-- new aws logo (part 1 of 2) -->
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/functions-logos-host.min.js?ev_version=05.221129"></script>
+
+<script type="text/javascript">
+
+    var jq = jQuery.noConflict();  // jquery setup
+
+    //DISC-42 / EV-16294
+    var commonMediaVersionFallback = '1.0.201022';
+    var commonMediaHeaderBundle = '/dist/header_bundle.js';
+    //PAC-17831 make the session key unique by adding in linkID (for dual lang sites)
+    var zkpConfigStr = sessionStorage.getItem('zkpConfig_'+linkID);
+    var zkpConfig = JSON.parse(zkpConfigStr);
+    var commonOverrideUrl = getQueryVariable('commonOverride');
+    /**
+     * Fn that loads the header_bundle.js based on commonOverride and zkpConfig variable
+     * This will always be triggered after evenueconfig api call is done
+     * Or if the zkpConfig is already in session
+     * **/
+    var loadHeaderBundle = function(zkpResp) {
+        var headerBundleUrl = commonLibPath + '/' + commonMediaVersionFallback + commonMediaHeaderBundle;
+        if (commonOverrideUrl !== '') {
+            jq.getScript(commonOverrideUrl+commonMediaHeaderBundle, function(resp) {
+                // console.log('override header_bundle loaded')
+            });
+            jq(document).ready(function() {
+                jq(document).trigger('load.footerbundle');
+            });
+        }
+        else {
+            if (typeof zkpResp['evenue.common.version'] !== 'undefined') {
+                headerBundleUrl = commonLibPath + '/' + zkpResp['evenue.common.version'] + commonMediaHeaderBundle;
+            }
+            jq.getScript(headerBundleUrl, function(resp) {
+                // console.log('header_bundle loaded')
+            });
+
+            jq(document).ready(function() {
+                jq(document).trigger('evenueconfig.loaded');
+                jq(document).trigger('load.footerbundle');
+            });
+        }
+    }
+
+    //EV-16294 - load evenueconfig first if not loaded
+    //PAC-18851 - make sure zkpConfig isn't an empty object
+    if (!zkpConfig || JSON.stringify(zkpConfig) === '{}') {
+        //evenu zkper does have a separate "siteId" for dual lang sites
+        //i.e ev_bathurst-multi-fr is valid when it comes to evenue zkper setting
+        //but ev_bathurst-multi-fr is not valid when its in pac7/8 platform
+        var siteIdFromLinkId = 'ev_' + linkID;
+        zkpConfig = {};
+        jq.ajax({
+            url: '/pac-api/catalog/evenueconfig',
+            method: 'GET',
+            headers: {
+                siteid: siteIdFromLinkId
+            }
+        }).done(function(resp) {
+            zkpConfig = resp;
+        }).fail(function() {
+            console.error('Failed to retrieve zkp configs!');
+        }).always(function() {
+            //PAC-17831 make the session key unique by adding in linkID (for dual lang sites)
+            sessionStorage.setItem('zkpConfig_'+linkID, JSON.stringify(zkpConfig));
+            loadHeaderBundle(zkpConfig);
+        });
+    }
+    else {
+        //zkpConfig already in session
+        loadHeaderBundle(zkpConfig);
+    }
+    //End DISC-42 / EV-16294
+
+
+
+        //PAC-17772 -  make sso call everytime to make sure updating session Storage ( Modified by ACCT-1826)
+        //ACCT-1826 - moving sso API call to not depend on minimal login flag only the function call will check minimal flag and adding session.Storage flag check again since shibboleth v1 is not being used anymore and the flag has linkId on it so it can differentiate between sites
+        // to prevent double API calls if the page we are loading is myaccount.html(which is called by all the pages that need a login) then we do not want to call these we will call them from that page this is mostly for Deep Links
+        var isMyAccountPgae = /MyAccount/i.test(pageName);
+        if(!isMyAccountPgae && common.loggedIn != true) {
+                if(sessionStorage.getItem("ev_sh_"+linkID)===null || sessionStorage.getItem("ev_sh_"+linkID) == '' ){
+                        jq.ajax({
+                                url: "https://" + window.location.hostname + "/pac-api/accounts/sso/siteId/" +siteID,
+                                dataType: "json",
+                                async: true,
+                                success: function(data) {
+                                        window.ev_sh = {
+                                                status:false,
+                                                link:''
+                                        }
+
+                                        if(data.status.cd===0){
+                                                sessionStorage.setItem("ev_sh_"+linkID, data.result.sso);
+                                                sessionStorage.setItem("ev_shLink_"+linkID, data.result.ssolink+"?linkID="+linkID);
+                                                sessionStorage.setItem("ev_shLinkOut_"+linkID, (typeof data.result.logoutUrl!='undefined'?data.result.logoutUrl:''));
+                                                window.ev_sh = {
+                                                        status: data.result.sso,
+                                                        link:data.result.ssolink+"?linkID="+linkID,
+                                                        linkOut:data.result.logoutUrl
+                                                }
+                                        }
+                                }
+                        });
+                }
+                //ACCT-1788 - call API to pull zkp flag myaccountv2.feature.evenue.auth.filter.enabled set session storage flag
+                if(sessionStorage.getItem("ev_myaccountv2_"+linkID) === null || sessionStorage.getItem("ev_myaccountv2_"+linkID) == ''){
+                jq.ajax({
+                                url: "https://" + window.location.hostname + "/pac-api/accounts/myaccountv2",
+                                dataType: "json",
+                                beforeSend: function (xhr) {
+                                xhr.setRequestHeader('siteid', siteID);
+                                },
+                                async: true,
+                                success: function(data) {
+                                        window.ev_myaccountv2 = {
+                                                status:false
+                                        }
+                                        if(data.status.cd===0){
+                                                sessionStorage.setItem("ev_myaccountv2_"+linkID,  data.result.myaccountv2);
+                                                window.ev_myaccountv2 = {
+                                                status:data.result.myaccountv2
+                                        }
+                                        }
+                                }
+                        });
+                }
+
+        }
+
+        // new aws logo (part 2 of 2)
+        jq(document).ready(function() {
+                loadLogos(jq);
+        });
+
+        // to center the light box function - disable for iPad (7.10.200 bug #28)
+        var isIpad = /ipad/i.test(navigator.userAgent||navigator.vendor||window.opera);
+        if(!isIpad) {
+                window.onscroll = function(){ adjustBox(); };
+        }
+
+        //  attach showBox as new window's alertbox
+        if(document.getElementById) {
+                window.alert = function(txt) {
+                        showBox(txt, document.title.split("|")[0]);
+                }
+        }
+
+        // lang code (link JS)
+        if(typeof(lang_settings)!="undefined") {
+                if(lang_settings.translate!="") {
+                        jq("body").attr("data-lang", lang_settings.translate);
+                        jq.ajax({
+                                url: "/www/ev_tktldr/ss/evenue/customize/shared/js/translate-"+lang_settings.translate+".min.js",
+                                dataType: "script",
+                                async: false,
+                                success: function() {
+                                        ev_Language.allpages(common.pageName);
+                                }
+                        });
+                } else {
+                        jq("body").attr("data-lang", "eng");
+                }
+        }
+</script>
+
+<script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/tools.js?ev_version=05.221129"></script>
+
+<!-- evUILibrary -->
+<script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/uiLibrary/uiLibrary.min.js?ev_version=05.221129"></script>
+<link rel="stylesheet" href="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/uiLibrary/uiLibrary.css?ev_version=05.221129">
+
+<!-- carouselBanner.js /Load after jQuery and evLibrary -->
+<script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/Carousel_banner/carouselBanner.min.js"></script>
+
+<!-- ONSALE MODULE -->
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/onsale.js?ev_version=05.221129"></script>
+
+
+<!-- responsive custom form -->
+
+
+
+<!-- StubHub SoldOut - Load -->
+
+<!-- custom scheme, EV-16275/DISC-34 (add flag for debugging purposes) -->
+        <script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/netCommerce/customization/import.js?timestamp=01_20221230"></script>
+
+<!-- tax module EV-1164 (for events, items, ds, cart and orderok), turned on: 0 -->
+<script type="text/javascript">
+        var ev_TaxModule = "0";
+</script>
+
+<!-- EV16274-->
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/ds/my-xmaskotte/16274.js" async></script>
+
+<!-- EV-1347: Dual Branding, load config, init and pre-load to diminish flashing (JD-529) -->
+<script type="text/javascript">
+    var ev_dualBranding = "0";
+</script>
+<!-- END EV-1347: Dual Branding -->
+
+<!-- DISC-413: cart util file -->
+<!-- END DISC-413: Util files -->
+
+<!-- DISC-439: globalTools util file -->
+<script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/utils/globalUtils.js?ev_version=05.221129"></script>
+
+<!-- ACCT-1246, ACCT-1319 - amplitude script -->
+<script type="text/javascript" src="/www/ev_tktldr/common/script/pa.js?ev_version=05.221129"></script>
+
+</head>
+
+        <body class="netCommerce netDesktop">
+
+        <div id="skiptocontent" >
+                <a href="#content" aria-label="Skip to content" >Skip to content</a>
+        </div>
+        <a name="topofpage" aria-l
+abel="Top of the page"></a>
+
+        <!-- responsive mini cart -->
+<!-- ****************************************************************************************
+                Responsive Mini-cart
+***************************************************************************************** -->
+
+<!-- get global styles -->
+<link rel="stylesheet" type="text/css" media="screen" href="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/minicart/miniCart-responsive.css?ev_version=05.221129">
+
+<!-- get global support functions -->
+<script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/evLibrary/minicart/minicart_responsive.min.js?ev_version=05.221129"></script>
+
+<script type="text/javascript">
+
+
+        // ****************************************
+        //      NetCommerce Support Functions
+        // ****************************************
+
+        function updateTimer(idx) {
+                var newTime = cartList[idx].timer.display(idx),
+                        minLeft = newTime.split(":")[0];
+                jq("#countdown"+idx).html(newTime);
+
+                if(!isNaN(minLeft) && Number(minLeft)<1) {
+                        jq("#countdown"+idx).addClass("warning");
+                }
+
+                // INV-527
+                if (!isNaN(minLeft) && Number(minLeft) === 0) {
+                        resetSessionStorage();
+                }
+                // INV-527
+        }
+
+        function startTimer(cartIndex, setTimerID) {
+                var exp = 'updateTimer('+cartIndex+');'
+                if(setTimerID)
+                        timerID = setInterval(exp, 1000);
+                else
+                        setInterval(exp, 1000);
+        }
+
+        function appPendingCart(txt) {
+                let elm = '<span class="list-group-item list-group-item-info">' +
+                                                '<p>' + txt + '</p>' +
+                                                '<p class="text-muted">New Application - <span class="error">This item is currently in the shopping cart.<br></span></p>' +
+                                        '</span>';
+                                        return elm;
+        }
+
+        function appCompleteCart(txt) {
+                let elm = '<span class="list-group-item list-group-item-info">' +
+                                                '<p>' + txt + ' - Completed</p>' +
+                                        '</span>';
+                                        return elm;
+        }
+
+        function getAppIdFromUrl(hrefStr) {
+                let startPos = hrefStr.indexOf("appCode=") + 8;
+                let endPos = hrefStr.indexOf('&',startPos);
+                let appId = hrefStr.substring(startPos, endPos);
+                return appId;
+        }
+
+        // ****************************************
+        //      Init flags
+        // ****************************************
+
+        // Determine number of active carts and the current cart's index
+        var timerID,
+                activeRes = 0,
+                thisCartIndex = -1;
+        if(hasProperty("ts.rsd") && getPropertyValue("ts.rsd") == "1" && (!common.hasCart))
+        {
+                var rxCartId, expire, curl;
+                et.resolvePoolId("ev_tktldr").done(function(p_poolId)
+                {
+                        //et.evrxCartTimer(p_poolId, "ev_tktldr", "en_US").done(function(data)
+                        et.getEvrxCart("tktldr", "ev_tktldr", p_poolId, "EV204", "47f4b4a031b8b0f8").done(function(data)
+                        {
+                                if(data.status.cd == 0){
+                                        if(data.status.mg != "successful"){
+                                                alert(JSON.stringify(data.status.mg))
+                                        }
+                                        else{
+                                                if(typeof(data.value)!="undefined")
+                                                {
+                                                        if(data.value.id != null)
+                                                        {
+                                                                rxCartId = JSON.parse(JSON.stringify(data.value.id));
+                                                                expire = JSON.parse(JSON.stringify(data.value.secondsUntilTimeout));
+                                                                var surl = "http://" + window.location.host + "/cgi-bin/ncommerce3/SEGetGroupList?linkID=tktldr";
+                                                                var rurl = "http://" + window.location.host + "/cgi-bin/ncommerce3/GetApps?linkID=tktldr&linkSource=SR&caller=appList";
+                                                                surl = escape(surl);
+                                                                rurl = escape(rurl);
+                                                                curl = "https://" + window.location.host + "/evrx/cart/?cartId=" + rxCartId + "&itemType=SE&linkID=tktldr&siteId=ev_tktldr&locale=en_US&ehid=EV204&esid=47f4b4a031b8b0f8&continueUrlSE=" + surl + "&continueUrlSR=" + rurl;
+                                                                cartList[0].url = curl;
+                                                                cartList[0].cart.number = -999;
+                                                                cartList[0].ticketNum = 99999;
+                                                                cartList[0].cart.expire = expire;
+                                                                sharedCartId = rxCartId;
+                                                                evrxOrderId = data.value.orderId;
+                                                                hasEvrxCart = true;
+                                                                evrxCartType = data.value.requestType;
+                                                                evrxCartStatus =data.value.statusType;
+                                                                if(evrxCartType == "APP_RENEWAL") {
+                                                                        evrxCartAppId = data.value.lines[0].renewalApplicationId;
+                                                                        jQuery(".list-group-item").each(function() {
+                                                                                if(this.href)
+                                                                                {
+                                                                                        if(evrxCartAppId == getAppIdFromUrl(this.href)) {
+                                                                                                if(evrxCartStatus == "PENDING") {
+                                                                                                        jQuery(this).after(appPendingCart(jQuery(this).text()));
+                                                                                                        jQuery(this).remove();
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        });
+                                                                }
+                                                                // set RSD session storage
+                                                                sessionStorage.setItem("rxCart", JSON.stringify(data.value));
+
+                                                                createTimer(sharedCartId, evrxOrderId);
+                                                        }
+                                                } else {
+                                                        var appIds = localStorage.getItem("appIds");
+                                                        var paymentDataAppIds = JSON.parse(appIds);
+                                                        jQuery(".list-group-item").each(function() {
+                                                                if(this.href)
+                                                                {
+                                                                        if(paymentDataAppIds[0] == getAppIdFromUrl(this.href)) {
+                                                                                jQuery(this).after(appCompleteCart(jQuery(this).text()));
+                                                                                jQuery(this).remove();
+                                                                        }
+                                                                }
+                                                        });
+                                                }
+                                        }
+                                }
+                                else
+                                {
+                                        //alert("Get evrx cart call failed" + " - " + data.status.mg);
+                                        cartList[0].url = "";
+                                        cartList[0].cart.number = "";
+                                        cartList[0].ticketNum = "";
+                                        cartList[0].cart.expire = "";
+
+                                        // delete RSD session storage
+                                        resetSessionStorage();
+
+                                }
+                        }).fail(function(data)
+                        {
+                                alert("Get evrx cart call failed");
+                        });
+
+
+                }).fail(function(data)
+                {
+                        //alert("Failed to resolve pool ID.");
+                        console.log("Failed to resolve pool ID.");
+                });
+        }
+        else
+        {
+                var p1, p2;
+                p1= ""; p2="";
+                createTimer(p1, p2);
+        }
+
+function resetSessionStorage() {
+        sessionStorage.removeItem('itemListObj');
+        sessionStorage.removeItem('PKObj');
+        sessionStorage.removeItem('DPObj');
+        sessionStorage.removeItem('SRObj');
+        sessionStorage.removeItem('TTObj');
+        sessionStorage.removeItem('packageInfo');
+        sessionStorage.removeItem('rxCart');
+
+        // INV-527
+        sessionStorage.removeItem('reservedSeatTotal');
+        sessionStorage.removeItem('currentSeatTotal');
+        // End INV-527
+}
+
+function createTimer(sharedCartId, evrxOrderId)
+{
+        for(var i=0; i < cartList.length; i++) {
+                if(cartList[i].cart.expire > 0) {
+                        ++activeRes;
+                        if(cartList[i].cart == cart) {
+                                thisCartIndex = i;
+                        }
+                }
+        }
+
+        // ****************************************
+        //      Session Storage
+        // ****************************************
+        (function() {
+                if(activeRes > 0) {
+                        // CART
+                        if(common.pageName=="CartDisplay.html" && typeof(hasReservation)!="undefined" && hasReservation) {
+                                sessionStorage.setItem("itemListObj", JSON.stringify(itemList_));
+                                sessionStorage.setItem("PKObj", JSON.stringify(cartPKList_));
+                                sessionStorage.setItem("DPObj", JSON.stringify(cartPledgeList_));
+                                sessionStorage.setItem("SRObj", JSON.stringify(cartRenewalList_));
+                                sessionStorage.setItem("TTObj", JSON.stringify(cartAcceptTTList_));
+                        }
+
+                        // PACKAGES
+                        if(common.pageName=="DisplayPackageReservation.html" && typeof(packageConfirm)==="object") {
+                                sessionStorage.setItem("packageInfo", JSON.stringify(packageConfirm));
+                                // delete session storage once package added
+                                jq(document).ready(function() {
+                                        jq('[onclick*="submitPackageConfirmForm"]').bind("click", function() {
+                                                sessionStorage.removeItem('packageInfo');
+                                        });
+                                }); // END jq(document).ready
+                        }
+
+                } else {
+                        // delete session storage if cart is emptied
+                        resetSessionStorage();
+                }
+
+                // load ev_cart info
+                setEvCart();
+        })();
+
+        // ****************************************
+        //      ACTION!
+        // ****************************************
+
+        if(activeRes > 0 && common.pageName != "OrderWait.html" && common.pageName != "OrderOk.html") {
+
+                // Create timer forms
+                timerDisplayed = 1;
+
+                for(var i=0; i < cartList.length; i++) {
+                        if(cartList[i].cart.expire > 0) {
+                           if(hasProperty("ts.rsd") && getPropertyValue("ts.rsd") == "1") {
+                                cartList[i].timer = new Timer_ajax(cartList[i], i, sharedCartId, evrxOrderId);
+                           }
+                           else {
+                                cartList[i].timer = new Timer(cartList[i], i);
+                           }
+                        }
+                }
+
+                setTimerFlag = false;
+
+                if(thisCartIndex > -1) {
+                        var cartExists = !(cartList[thisCartIndex].pkNum=="" && cartList[thisCartIndex].transferNum=="" && cartList[thisCartIndex].appNum=="" && cartList[thisCartIndex].appPayCode=="" && cartList[thisCartIndex].ticketNum=="" && cartList[thisCartIndex].miscNum=="" && cartList[thisCartIndex].pledgeNum=="" && cartList[thisCartIndex].pledgePayNum=="");
+                        var packageExists = (pkItemOnBuild[0]!=undefined && pkItemOnBuild[0].pkNum!="");
+
+                        if(cartExists || packageExists) {
+
+                                // print module
+                                jQuery("body").append(
+                                        '<div id="timer_responsive" class="'+ (typeof(minicart_setting)==="string" && minicart_setting!="" ? "mc_"+minicart_setting : "") +'">' +
+                                        '       <div class="container"><div class="row">' +
+                                        '               <div class="col-xs-9">' +
+                                        '                       <i class="fa fa-s
+hopping-cart fa-2x pull-left"></i>' +
+                                        '                       <div id="minicart_Info"></div>' +
+                                        '               </div>' +
+                                        '               <div class="col-xs-3 text-right" aria-live="polite" aria-atomic="true" aria-label="Shopping cart expires in"><strong id="countdown' + thisCartIndex + '" class="cart_text"></strong></div>' +
+                                        '       </div></div>' +
+                                        '</div>'
+                                );
+                                if(packageExists)  {
+                                        // load package data
+                                        minicart_getPackageInfo(pkItemOnBuild[0].pkUrl);
+                                } else if(cartExists) {
+                                        // load cart data
+                                        minicart_getCartInfo(cartList[thisCartIndex].url);
+                                }
+
+                                minicart_adjustPage();
+
+                        } // END if(cartExists || packageExists)
+
+                        setTimerFlag = true;
+
+                        if(setTimerFlag) {
+                                startTimer(thisCartIndex, true);
+                        }
+
+                } // END if(thisCartIndex)
+
+        } // END if(activeRes)
+
+} // END createTimer
+
+</script>
+<!-- end showactivecartlist_responsive -->
+        <!-- END responsive mini cart -->
+
+        <div id="banner-responsive">
+                <div class="contentArea">
+                        <div class="logo">
+                                <img src="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/images/mobile/mobile-banner.png" alt="site logo">
+                        </div>
+                        <div class="mini-menu-toggle">
+                                <i class="fa fa-bars"></i>
+                        </div>
+                        <div id="topMobileNav"></div>
+                </div>
+        </div>
+    <!-- SEARCH MODULE for Mobile - container EV16190,DISC56 To make it wotk on mobile-->
+        <div id="superSearchModule_m"></div>
+
+
+<div id="wrap">
+<div id="container" class="container">
+
+<div id="banner" role="banner">
+        <div class="container">
+
+                <header class="header clearfix">
+                        <div class="header_wrapper">
+                                <div class="logo">
+                                        <a href="https://www.ticketleader.ca/" title="Ticket Leader">
+                                                <!--<img src="/evenue/evenue15/images/skin/logo_svg.png">-->
+                                                Ticket Leader
+                                        </a>
+                                        <svg width="378px" height="122px" viewBox="0 0 378 122" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                            <desc>Created with Sketch.</desc>
+                                            <defs>
+                                                <linearGradient x1="1.3351751%" y1="0%" x2="83.9325688%" y2="100%" id="linearGradient-1">
+                                                    <stop stop-color="#024260" offset="0%"></stop>
+                                                    <stop stop-color="#00589D" offset="100%"></stop>
+                                                </linearGradient>
+                                            </defs>
+                                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <g id="logo">
+                                                    <path d="M0.212,121 L0.212,0 L377.504277,0 C377.546378,0.0329925 376.1086,3.0531811 373.190004,9.0605658 C369.381694,6.44591 364.849972,7.6460123 362.854351,11.5679959 C360.862887,15.4899796 362.155883,20.6698023 365.768789,23.119496 C365.804821,23.149739 364.362153,26.167178 361.440786,32.171813 C357.640791,29.553033 353.109068,30.761384 351.12592,34.683367 C349.121984,38.605351 350.410823,43.768678 354.023728,46.234867 C354.068075,46.26786 352.625408,49.285299 349.695725,55.287185 C345.89573,52.680777 341.368165,53.880879 339.376702,57.802863 C337.381081,61.724847 338.678235,66.896421 342.282825,69.346115 C342.327172,69.381856 340.890048,72.402045 337.971452,78.40668 C334.146512,75.796149 329.63142,76.988003 327.635799,80.909986 C325.627705,84.83197 326.937331,90.020041 330.533607,92.461486 C330.583497,92.494479 329.14083,95.514667 326.205604,101.522052 C322.422239,98.907396 317.890517,100.107498 315.886581,104.029482 C313.886802,107.951466 315.196428,113.131288 318.792704,115.580982 C318.834279,115.611225 318.013857,117.417564 316.331438,121 L0.212,121 Z" id="Shape" fill="url(#linearGradient-1)"></path>
+                                                    <path d="M114.08804,19.818851 C116.658157,21.6540464 119.823612,20.7831571 121.21467,17.9173599 C122.608631,15.0455357 121.711268,11.266661 119.181809,9.47666786 C119.174064,9.46059607 120.210823,7.28086243 122.292086,2.93746692 C124.865107,4.76964855 128.030562,3.89574614 129.415811,1.02392196 C129.494711,0.862048387 129.961814,1.02392196 130.737305,1.02392196 C136.158854,1.02392196 183.734817,0.798925393 273.465192,0.34893225 L349.641113,55.2242432 C348.494937,54.6313363 347.683454,54.262806 347.206665,54.1186523 C346.080344,53.7781171 345.18667,53.8499004 344.597168,53.9348145 C341.749597,54.3449887 340.230337,56.3145307 339.676392,57.3493652 C339.090417,58.4440347 337.824832,60.7805299 338.71167,63.8494873 C338.921059,64.5740919 339.165221,65.8825938 340.108521,67.2590332 C340.432714,67.732088 341.127253,68.4422931 342.192139,69.3896484 C340.75978,72.4265733 339.295719,75.366119 338.004546,78.3381684 C337.508192,77.9568009 337.186617,77.9030494 336.787842,77.6833496 C335.942074,77.2173856 334.38058,76.9574879 333.35376,76.9570312 C332.049147,76.9564511 330.689839,77.5246895 329.664429,78.3381684 C328.803036,79.0215284 328.195587,79.9139967 327.874146,80.4335938 C327.113072,81.6638363 326.003953,84.6649675 326.942505,86.984375 C327.3579,88.0109238 327.97122,90.0155006 328.706665,90.8223877 C329.235774,91.4028954 329.711354,91.9602462 330.066772,92.1577148 C330.369397,92.3258512 330.605839,92.1374622 330.48877,92.5092773 C329.887357,94.4193781 328.725629,96.3765962 327.617432,98.493042 C327.32057,99.0599917 327.054333,99.6372814 326.740112,100.209473 C326.537362,100.578678 326.239633,100.914543 326.151855,101.348633 C325.303111,100.952268 324.378176,100.493109 323.328857,100.209473 C321.797823,99.7956255 319.842748,100.332329 319.658813,100.491699 C319.28772,100.813232 316.891065,101.300835 315.877075,103.971313 C314.38904,107.890254 313.413696,106.146851 315.61377,111.389038 C317.813843,116.631226 318.76355,113.774711 318.76355,115.641479 C318.76355,115.811523 316.369873,120.972656 316.369873,120.972656 C326.280206,120.972656 303.899303,121.034893 249.227164,121.159365 L112.212,23.6851163 L114.08804,19.818851 Z" id="Shape" fill="#000000" fill-rule="nonzero" opacity="0.1"></path>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                </div>
+                                <div class="toolbar">
+                                        <div class="toolbar-menu">
+                                        <a class="headerlink headerlink_email hdr_promotions outer" href="javascript:;">Promo Code</a>
+                                        <span class="seperator">|</span>
+                                        <a href="https://ats.eccmp.com/ats/show.aspx?cr=993&amp;fm=19" class="headerlink headerlink_email" target="_blank">Email Signup</a>
+                                        <span class="seperator">|</span>
+                                        <a href="https://www.ticketleader.ca/contact-us" class="headerlink headerlink_service">Contact Us</a>
+                                        <span class="seperator">|</span>
+                                                <a class="headerlink headerlink_email hdr_myaccount outer" href="javascript:;">My Account</a>
+                                                <span class="seperator">|</span>
+                                                <span id="popUpLogin" style="height:100%; width:100%">
+                                                        <a id="popUp_sign_in" class="nav-link headerlink headerlink_email" href="javascript:;">Login</a>
+                                                        <a id="popUp_sign_out" class="nav-link headerlink headerlink_email" href="javascript:;">Logout</a>
+                                                </span>
+                                        <!-- sign in widgets - mint or chocolate -->
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/integration.js"></script>
+
+
+        <script type="text/javascript">
+
+                var IPFlag = "0";
+                if(hasProperty("reg.integratedPatron")) {
+                        IPFlag = getPropertyValue("reg.integratedPatron");
+                }
+
+                function emailValidateMyAccount_embedded(email) {
+                        var str = email.value; // email string
+
+                        var reg1 = /(@.*@)|(\.\.)|(@\.)|(\.@)|(^\.)/; // not valid
+                        var reg2 = /^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,9}|[0-9]{1,4})(\]?)$/; // valid
+
+                        if(IPFlag == "0")
+                        {
+                                if( isNaN(parseInt(str)) == false )
+                                        return true;
+                        }
+
+                        if (!reg1.test(str) && reg2.test(str)) { // if syntax is valid
+                                return true;
+                        }
+                        window.status = "Please enter a valid Internet e-mail address";
+
+                        email.focus();
+                        email.select();
+                        return false;
+                }
+
+                function formValidate_embedded(frm) {
+                        if(emailValidateMyAccount_embedded(frm.email) == false && accntValidate(frm.email) == false) {
+                                alert("Please enter a valid Internet e-mail address or account number");
+                                return false;
+                        }
+                        if(passwordValidate(frm.password) == false) {
+                                if(IPFlag)
+                                        alert("Please enter a password between 6 and 15 characters in length");
+                                else
+                                        alert("Please enter a password between 4 and 12 characters in length");
+                                return false;
+                        }
+                        return true;
+                }
+
+                function getReturnUrl_embedded(url) {
+                        if(typeof(url)=="undefined" || url=="") {
+                                var url = document.location.href;
+                        }
+                        var returnURL = url;
+
+                        // default links for cart or any other page without linkID
+                        if("EVError.html"=="CartDisplay.html") {
+                                returnURL = createNavigateHref("CART");
+                        } else if(returnURL.indexOf("linkID=tktldr")==-1) {
+                                returnURL = createNavigateHref("SE");
+                        }
+                        if(returnURL.match(/^https?:\/\//i)==null) returnURL = "https://" + window.location.host + returnURL;
+
+                        if('EVError.html' == 'CartDisplay.html' && !common.hasCart){
+                                returnURL = createNavigateHref("SE");
+                        } else if(returnURL.indexOf("#")>-1 && returnURL.inde
+xOf("#")<returnURL.indexOf("?")) {
+                                // fix for where the "#" comes before "?"
+                                returnURL = returnURL.split("#")[0] + returnURL.substr(returnURL.indexOf("?"));
+                                returnURL = returnURL.split('&url=')[0];
+                        } else {
+                                // re-direct/cross browser issue
+                                returnURL = returnURL.split("#")[0];
+                        }
+
+                        // secure
+                        returnURL = returnURL.replace(/^http:/i, "https:");
+
+                        return returnURL;
+                }
+
+                function goOn_embedded(action) {
+                        var act, aType, cUrl;
+                        if("".indexOf("ssoio.d2w") != -1)
+                        {
+                                cUrl = "".substring("".indexOf("url=") + 4, "".length);
+                                if(cUrl.indexOf("&") != -1)
+                                {
+                                        cUrl = cUrl.substring(0, cUrl.indexOf("&") - 1);
+                                }
+                                //alert(cUrl);
+                        }
+                        else
+                        {
+                                cUrl = encodeURIComponent("");
+                        }
+                        //var j = jQuery.noConflict();
+
+                        if(action == "REGISTER") {
+                                et.ssoLogin("ev_tktldr", "-1", "", "", "EV204", "47f4b4a031b8b0f8").done(function(data)
+                                {
+                                        //console.log("login successfully");
+                                        if('EVError.html' == 'CartDisplay.html' && !common.hasCart)
+                                        {
+                                                act = "CA";
+                                                window.location = "https://" + window.location.host + "/www/ev_tktldr/ss/evenue/?p=1#EvNavigation?linkID=tktldr&siteId=ev_tktldr&locale=en_US&action=" + act + "&cartType=" + (getgcURL() != "" ? "&gcUrl=1" : "&gcUrl=0") + "&continueUrl=" + encodeURIComponent(getReturnUrl_embedded());
+                                        }
+                                        else if('' == "CH")
+                                        {
+                                                act = "CH";
+                                                aType = "R";
+                                                var urlF = "https://" + window.location.host + "/cgi-bin/ncommerce3/SECartRedisplay?linkID=tktldr&cartNum=" + cart.number;
+                                                sendCartInfo(act, urlF, aType);
+                                        }
+                                        else
+                                        {
+                                                act = "CA";
+                                                window.location = "https://" + window.location.host + "/www/ev_tktldr/ss/evenue/?p=1#EvNavigation?linkID=tktldr&siteId=ev_tktldr&locale=en_US&action=" + act + "&cartType=" + (getgcURL() != "" ? "&gcUrl=1" : "&gcUrl=0") + "&continueUrl=" + encodeURIComponent(getReturnUrl_embedded());
+                                        }
+                                }).fail(function(data)
+                                {
+                                        alert("Blank login failed:" + JSON.stringify(data));
+                                });
+                        } else if(action == "FORGOT") {
+                                // template 7.10.100 Forgot password flow additions, temporary
+                                var ev_url = getReturnUrl_embedded();
+                                jq.cookie("ev_url", encodeURIComponent(ev_url));
+
+                                //      location.href = "/cgi-bin/ncommerce3/EVExecMacro?linkID=tktldr&evm=regf&addrReq=&phoneReq=&RSRC=&RDAT=";
+                                //      7.10.100 temporary fix
+                                location.href = "/cgi-bin/ncommerce3/EVExecMacro?linkID=tktldr&evm=regf&addrReq=&phoneReq=&RSRC=&RDAT=&linkSource=&shopperContext=";
+                        } else {
+                                return false;
+                        }
+                }
+
+        </script>
+
+
+
+        <!--<div id="header_menu" class="pull-right" > PAC-17111 Moved in script-->
+                <script type="text/javascript">
+                    //PAC-17111
+                        document.write(
+                                '<div id="header_menu" class="pull-right" >'
+                        );
+                        //end PAC-17111
+                        if(common.loggedIn) {
+                                document.write(
+                                        '<a href="', createNavigateHref("ACCOUNT"), '" class="btn btn-default btn-xs"><i class="fa fa-file"></i> Manage My Account</a> '
+                                );
+                        }
+                        if(regAdminInfo.loginMode != "D" && common.loggedIn) {
+                                document.write(
+                                        '<a href="', createNavigateHref("LOGOUT"), '" onClick="return confirmLogOut()" class="btn btn-primary btn-xs"><i class="fa fa-unlock"></i> Logout</a>'
+                                );
+                        }
+
+                                if( !common.loggedIn &&
+                                        (regAdminInfo.loginMode == "R" || regAdminInfo.loginMode == "O") &&
+                                        ("EVError.html" != "MyAccount.html") &&
+                                        (("EVError.html" != "DisplayEventList.html") || ("EVError.html" == "DisplayEventList.html" && "" == ""))
+                                ) {
+
+                                        var loginAction_ = "https://" + window.location.host + "/cgi-bin/ncommerce3/REGLogin";
+
+                                        // updated to use getReturnUrl_embedded for url/returnURL
+                                        document.write(
+                                                '<form action="'+ loginAction_ +'" method="post" name="loginForm" onSubmit="return formValidate_embedded(this)">' +
+                                                '       <input type="hidden" name="addrReq" value="">' +
+                                                '       <input type="hidden" name="phoneReq" value="">' +
+                                                '       <input type="hidden" name="shopperContext" value="">' +
+                                                '       <input type="hidden" name="linkSource" value="">' +
+                                                '       <input type="hidden" name="relink" value="">' +
+                                                '       <input type="hidden" name="returnURL" value="'+ getReturnUrl_embedded() +'">' +
+                                                '       <input type="hidden" name="linkID" value="tktldr">' +
+                                                '       <input type="hidden" name="entry" value="">' +
+                                                '       <input type="hidden" name="cartNum" value="">' +
+                                                '       <input type="hidden" name="account" value="">' +
+                                                '       <input type="hidden" name="pin" value="">' +
+                                                '       <input type="hidden" name="skippedLogin" value="0">' +
+                                                '       <input type="hidden" name="numAddr" value="">' +
+                                                '       <input type="hidden" name="RSRC" value="">' +
+                                                '       <input type="hidden" name="RDAT" value="">' +
+                                                '       <input type="hidden" name="numPhones" value="">'
+                                        );
+                                        var urlV = ("").replace(/^http:/i, "https:");
+                                        if("".indexOf("ssoio.d2w") == -1)
+                                        {
+                                                urlV = "https://" + window.location.host + "/cgi-bin/ncommerce3/ExecMacro/evenue/ev69/core/ssoio.d2w/report?linkID=" + 'tktldr' + "&isSignin=1&url=" + encodeURIComponent(getReturnUrl_embedded());
+                                        }
+                                        document.write('<input type="hidden" name="url" value="', urlV,'">');
+
+                                        document.write(
+                                                '<button type="button" onclick="goOn_embedded(\'REGISTER\');" class="btn btn-default btn-xs"><i class="fa fa-user"></i> Create an Account</button> '
+                                        );
+
+                                        //login widget hidden form - must have this
+                    var widgetHiddenForm = '<p><input type="text" id="email" name="email" maxlength="50" class="form-control" placeholder="Email / Account #" aria-label="Email or Account Number"></p>'+
+                    '<p><input type="password" id="password" name="password" maxlength="12" class="form-control" placeholder="Password" aria-label="Password" autocomplete="off"></p>'+
+                    '<p><input type="submit" name="submitForm" value="Login" class="btn btn-default btn-sm"></p>';
+
+                    //original widget dropdown btn
+                    var widgetDropdownBtn = '<button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">'+
+                                            '<i class="fa fa-lock"></i> Login <i class="fa fa-caret-down"></i>'+
+                    '</button>';
+
+                    //original widget dropdown menu
+                    var widgetLoginDropdown =
+                    '   <div class="dropdown-menu dropdown-menu-right">'+
+                    '       <div class="row">'+
+                    '           <div class="col-md-12 text-center dropdown-login">'+
+                    widgetHiddenForm +
+                    '               <p>'+
+                    '                                   <a href="javascript:goOn_embedded(\'REGISTER\');">New User</a><br />'+
+                    '                                   <a href="javascript:goOn_embedded(\'FORGOT\');">Forgot Password?</a>'+
+                    '                           </p>'+
+                    '           </div>'+
+                    '       </div>'+
+                    '   </div>';
+
+                    //EV-16179 Add LB sign in method
+                    var widgetLBBtn = '<button class="btn btn-primary btn-xs" type="button" onClick="evUILib.launchSignInLB(lightboxLoginMethodOptions)">'+
+                                            '<i class="fa fa-lock"></i> '+(lightboxLoginMethodOptions.login ? lightboxLoginMethodOptions.login : 'Login')+' <i class="fa fa-caret-down"></i>'+
+                    '</button>'+
+                    '<div style="display: none;">'+widgetHiddenForm+'</div>';
+
+                                        document.write(
+                                                '<div class="btn-group login-dropdown-container">',
+                            window.loginMethod === "lightbox" ? widgetLBBtn : widgetDropdownBtn+widgetLoginDropdown,
+                                                '</div>',
+                                                '</form>'
+                                        );
+
+                                        // ACCT-1788 (if myAccountv2 is enabled and USI enabled , hide login widget)
+                                        // DISC-583 (if USI is enabled, hide login widget)
+
+                                        // support function
+                                        var ev_USILoginWidget = function() {
+                                                var zkpMyAccountV2Enabled = sessionStorage.getItem("ev_myaccountv2_"+linkID) === "true";
+                                                var isUSIenabled = zkpConfig["feature.evenuenext.usi.accessible"] || false;
+                                                if(isUSIenabled && zkpMyAccountV2Enabled) {
+                                                        // if USI is enabled, hide login widget and replace with button to regular login page
+                                                        jQuery('#header_menu').html(
+                                                                '<a href="'+ createNavigateHref("LOGIN") +'" class="btn btn-primary btn-xs"><i class="fa fa-lock"></i> Login</a>'
+                                                        );
+                                                }
+                                                jq('#header_menu').show(); // show after USI checked
+                                        };
+
+                                        // hide initially
+                                        jq('#header_menu').hide();
+
+                                        // check if zkp loaded before toggling widget
+                                        if(JSON.stringify(zkpConfig)==='{}' || typeof zkpConfig==='undefined') {
+                                                jq(document).on('load.footerbundle', function() {
+                                                        ev_USILoginWidget();
+                                                });
+                                        } else {
+                                                ev_USILoginWidget();
+                                        }
+                                        // END DISC-583
+                                }
+
+
+        //DISC-23 / EV-16287 - ADA fix : move the end div tag into script since #header_menu opening div tag was moved in
+        document.write(
+            '</div>'
+        );
+
+
+                //Fix input element click problem
+                jq('.dropdown-menu input, .dropdown-menu label').click(function(e) {
+                        e.stopPropagation();
+        });
+
+        //EV-16179 - Auto focus to email input field if dropdown is opened
+        jq('#header_menu .login-dropdown-container').on('show.bs.dropdown', function () {
+            var self =  this;
+            //need a delay
+            setTimeout(function() {
+                jq(self).find('#email').focus()
+            }, 500);
+        });
+                </script>
+                                                <div>
+                                                        <!-- SEARCH MODULE - container -->
+                                                        <div id="superSearchModule"></div>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="nav_wrapper">
+                                        <nav class="main_nav" data-options="default">
+                                                <div class="mobile-nav-header"></div>
+
+                                                </div>
+                                        </nav>
+                                </div>
+                                <div class="header_search_wrapper">
+                                        <div class="header-search">
+                                                <div class="search-form">
+                                                    <div>
+                                                                <script>
+                                                                        //document.write( promoBox_mod(1, "", '<div class="row" style="position:absolute; right:25px; top:50px; width:250px;">', '</div>') );
+                                                                        document.write( promoBox_mod(1, "", '<div class="row">', '</div>') );
+                                                                </script>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </header>
+
+
+                <!-- Promo Code Widget -->
+                <script type="text/javascript">
+                        document.write(
+                                promoBox_mod(1, "", '<div id="promo_widget">', '</div>')
+                        );
+                </script>
+                <!-- end of Promo Code Widget -->
+
+                <!-- sign in widgets - mint or chocolate -->
+
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/shared/js/integration.js"></script>
+
+
+        <script type="text/javascript">
+
+                var IPFlag = "0";
+                if(hasProperty("reg.integratedPatron")) {
+                        IPFlag = getPropertyValue("reg.integratedPatron");
+                }
+
+                function emailValidateMyAccount_embedded(email) {
+                        var str = email.value; // email string
+
+                        var reg1 = /(@.*@)|(\.\.)|(@\.)|(\.@)|(^\.)/; // not valid
+                        var reg2 = /^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,9}|[0-9]{1,4})(\]?)$/; // valid
+
+                        if(IPFlag == "0")
+                        {
+                                if( isNaN(parseInt(str)) == false )
+                                        return true;
+                        }
+
+                        if (!reg1.test(str) && reg2.test(str)) { // if syntax is valid
+                                return true;
+                        }
+                        window.status = "Please enter a valid Internet e-mail address";
+
+                        email.focus();
+                        email.select();
+                        return false;
+                }
+
+                function formValidate_embedded(frm) {
+                        if(emailValidateMyAccount_embedded(frm.email) == false && accntValidate(frm.email) == false) {
+                                alert("Please enter a valid Internet e-mail address or account number");
+                                return false;
+                        }
+                        if(passwordValidate(frm.password) == false) {
+                                if(IPFlag)
+                                        alert("Please enter a password between 6 and 15 characters in length");
+                                else
+                                        alert("Please enter a password between 4 and 12 characters in length");
+                                return false;
+                        }
+                        return true;
+                }
+
+                function getReturnUrl_embedded(url) {
+                        if(typeof(url)=="undefined" || url=="") {
+                                var url = document.location.href;
+                        }
+                        var returnURL = url;
+
+                        // default links for cart or any other page without linkID
+                        if("EVError.html"=="CartDisplay.html") {
+                                returnURL = createNavigateHref("CART");
+                        } else if(returnURL.indexOf("linkID=tktldr")==-1) {
+                                returnURL = createNavigateHref("SE");
+                        }
+                        if(returnURL.match(/^https?:\/\//i)==null) returnURL = "https://" + window.location.host + returnURL;
+
+                        if('EVError.html' == 'CartDisplay.html' && !common.hasCart){
+                                returnURL = createNavigateHref("SE");
+                        } else if(returnURL.indexOf("#")>-1 && returnURL.indexOf("#")<returnURL.indexOf("?")) {
+                                // fix for where the "#" comes before "?"
+                                returnURL = returnURL.split("#")[0] + returnURL.substr(returnURL.indexOf("?"));
+                                returnURL = returnURL.split('&url=')[0];
+                        } else {
+                                // re-direct/cross browser issue
+                                returnURL = returnURL.split("#")[0];
+                        }
+
+                        // secure
+                        returnURL = returnURL.replace(/^http:/i, "https:");
+
+                        return returnURL;
+                }
+
+                function goOn_embedded(action) {
+                        var act, aType, cUrl;
+                        if("".indexOf("ssoio.d2w") != -1)
+                        {
+                                cUrl = "".substring("".indexOf("url=") + 4, "".length);
+                                if(cUrl.indexOf("&") != -1)
+                                {
+                                        cUrl = cUrl.substring(0, cUrl.indexOf("&") - 1);
+                                }
+                                //alert(cUrl);
+                        }
+                        else
+                        {
+                                cUrl = encodeURIComponent("");
+                        }
+                        //var j = jQuery.noConflict();
+
+                        if(action == "REGISTER") {
+                                et.ssoLogin("ev_tktldr", "-1", "", "", "EV204", "47f4b4a031b8b0f8").done(function(data)
+                                {
+                                        //console.log("login successfully");
+                                        if('EVError.html' == 'CartDisplay.html' && !common.hasCart)
+                                        {
+                                                act = "CA";
+                                                window.location = "https://" + window.location.host + "/www/ev_tktldr/ss/evenue/?p=1#EvNavigation?linkID=tktldr&siteId=ev_tktldr&locale=en_US&action=" + act + "&cartType=" + (getgcURL() != "" ? "&gcUrl=1" : "&gcUrl=0") + "&continueUrl=" + encodeURIComponent(getReturnUrl_embedded());
+                                        }
+                                        else if('' == "CH")
+                                        {
+                                                act = "CH";
+                                                aType = "R";
+                                                var urlF = "https://" + window.location.host + "/cgi-bin/ncommerce3/SECartRedisplay?linkID=tktldr&cartNum=" + cart.number;
+                                                sendCartInfo(act, urlF, aType);
+                                        }
+                                        else
+                                        {
+                                                act = "CA";
+                                                window.location = "https://" + window.location.host + "/www/ev_tktldr/ss/evenue/?p=1#EvNavigation?linkID=tktldr&siteId=ev_tktldr&locale=en_US&action=" + act + "&cartType=" + (getgcURL() != "" ? "&gcUrl=1" : "&gcUrl=0") + "&continueUrl=" + encodeURIComponent(getReturnUrl_embedded());
+                                        }
+                                }).fail(function(data)
+                                {
+                                        alert("Blank login failed:" + JSON.stringify(data));
+                                });
+                        } else if(action == "FORGOT") {
+                                // template 7.10.100 Forgot password flow additions, temporary
+                                var ev_url = getReturnUrl_embedded();
+                                jq.cookie("ev_url", encodeURIComponent(ev_url));
+
+                                //      location.href = "/cgi-bin/ncommerce3/EVExecMacro?linkID=tktldr&evm=regf&addrReq=&phoneReq=&RSRC=&RDAT=";
+                                //      7.10.100 temporary fix
+                                location.href = "/cgi-bin/ncommerce3/EVExecMacro?linkID=tktldr&evm=regf&addrReq=&phoneReq=&RSRC=&RDAT=&linkSource=&shopperContext=";
+                        } else {
+                                return false;
+                        }
+                }
+
+        </script>
+
+
+
+        <!--<div id="header_menu" class="pull-right" > PAC-17111 Moved in script-->
+                <script type="text/javascript">
+                    //PAC-17111
+                        document.write(
+                                '<div id="header_menu" class="pull-right" >'
+                        );
+                        //end PAC-17111
+                        if(common.loggedIn) {
+                                document.write(
+                                        '<a href="', createNavigateHref("ACCOUNT"), '" class="btn btn-default btn-xs"><i class="fa fa-file"></i> Manage My Account</a> '
+                                );
+                        }
+                        if(regAdminInfo.loginMode != "D" && common.loggedIn) {
+                                document.write(
+                                        '<a href="', createNavigateHref("LOGOUT"), '" onClick="return confirmLogOut()" class="btn btn-primary btn-xs"><i class="fa fa-unlock"></i> Logout</a>'
+                                );
+                        }
+
+                                if( !common.loggedIn &&
+                                        (regAdminInfo.loginMode == "R" || regAdminInfo.loginMode == "O") &&
+                                        ("EVError.html" != "MyAccount.html") &&
+                                        (("EVError.html" != "DisplayEventList.html") || ("EVError.html" == "DisplayEventList.html" && "" == ""))
+                                ) {
+
+                                        var loginAction_ = "https://" + window.location.host + "/cgi-bin/ncommerce3/REGLogin";
+
+                                        // updated to use getReturnUrl_embedded for url/returnURL
+                                        document.write(
+                                                '<form action="'+ loginAction_ +'" method="post" name="loginForm" onSubmit="return formValidate_embedded(this)">' +
+                                                '       <input type="hidden" name="addrReq" value="">' +
+                                                '       <input type="hidden" name="phoneReq" value="">' +
+                                                '       <input type="hidden" name="shopperContext" value="">' +
+                                                '       <input type="hidden" name="linkSource" value="">' +
+                                                '       <input type="hidden" name="relink" value="">' +
+                                                '       <input type="hidden" name="returnURL" value="'+ getReturnUrl_embedded() +'">' +
+                                                '       <input type="hidden" name="linkID" value="tktldr">' +
+                                                '       <input type="hidden" name="entry" value="">' +
+                                                '       <input type="hidden" name="cartNum" value="">' +
+                                                '       <input type="hidden" name="account" value="">' +
+                                                '       <input type="hidden" name="pin" value="">' +
+                                                '       <input type="hidden" name="skippedLogin" value="0">' +
+                                                '       <input type="hidden" name="numAddr" value="">' +
+                                                '       <input type="hidden" name="RSRC" value="">' +
+                                                '       <input type="hidden" name="RDAT" value="">' +
+                                                '       <input type="hidden" name="numPhones" value="">'
+                                        );
+                                        var urlV = ("").replace(/^http:/i, "https:");
+                                        if("".indexOf("ssoio.d2w") == -1)
+                                        {
+                                                urlV = "https://" + window.location.host + "/cgi-bin/ncommerce3/ExecMacro/evenue/ev69/core/ssoio.d2w/report?linkID=" + 'tktldr' + "&isSignin=1&url=" + encodeURIComponent(getReturnUrl_embedded());
+                                        }
+                                        document.write('<input type="hidden" na
+me="url" value="', urlV,'">');
+
+                                        document.write(
+                                                '<button type="button" onclick="goOn_embedded(\'REGISTER\');" class="btn btn-default btn-xs"><i class="fa fa-user"></i> Create an Account</button> '
+                                        );
+
+                                        //login widget hidden form - must have this
+                    var widgetHiddenForm = '<p><input type="text" id="email" name="email" maxlength="50" class="form-control" placeholder="Email / Account #" aria-label="Email or Account Number"></p>'+
+                    '<p><input type="password" id="password" name="password" maxlength="12" class="form-control" placeholder="Password" aria-label="Password" autocomplete="off"></p>'+
+                    '<p><input type="submit" name="submitForm" value="Login" class="btn btn-default btn-sm"></p>';
+
+                    //original widget dropdown btn
+                    var widgetDropdownBtn = '<button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">'+
+                                            '<i class="fa fa-lock"></i> Login <i class="fa fa-caret-down"></i>'+
+                    '</button>';
+
+                    //original widget dropdown menu
+                    var widgetLoginDropdown =
+                    '   <div class="dropdown-menu dropdown-menu-right">'+
+                    '       <div class="row">'+
+                    '           <div class="col-md-12 text-center dropdown-login">'+
+                    widgetHiddenForm +
+                    '               <p>'+
+                    '                                   <a href="javascript:goOn_embedded(\'REGISTER\');">New User</a><br />'+
+                    '                                   <a href="javascript:goOn_embedded(\'FORGOT\');">Forgot Password?</a>'+
+                    '                           </p>'+
+                    '           </div>'+
+                    '       </div>'+
+                    '   </div>';
+
+                    //EV-16179 Add LB sign in method
+                    var widgetLBBtn = '<button class="btn btn-primary btn-xs" type="button" onClick="evUILib.launchSignInLB(lightboxLoginMethodOptions)">'+
+                                            '<i class="fa fa-lock"></i> '+(lightboxLoginMethodOptions.login ? lightboxLoginMethodOptions.login : 'Login')+' <i class="fa fa-caret-down"></i>'+
+                    '</button>'+
+                    '<div style="display: none;">'+widgetHiddenForm+'</div>';
+
+                                        document.write(
+                                                '<div class="btn-group login-dropdown-container">',
+                            window.loginMethod === "lightbox" ? widgetLBBtn : widgetDropdownBtn+widgetLoginDropdown,
+                                                '</div>',
+                                                '</form>'
+                                        );
+
+                                        // ACCT-1788 (if myAccountv2 is enabled and USI enabled , hide login widget)
+                                        // DISC-583 (if USI is enabled, hide login widget)
+
+                                        // support function
+                                        var ev_USILoginWidget = function() {
+                                                var zkpMyAccountV2Enabled = sessionStorage.getItem("ev_myaccountv2_"+linkID) === "true";
+                                                var isUSIenabled = zkpConfig["feature.evenuenext.usi.accessible"] || false;
+                                                if(isUSIenabled && zkpMyAccountV2Enabled) {
+                                                        // if USI is enabled, hide login widget and replace with button to regular login page
+                                                        jQuery('#header_menu').html(
+                                                                '<a href="'+ createNavigateHref("LOGIN") +'" class="btn btn-primary btn-xs"><i class="fa fa-lock"></i> Login</a>'
+                                                        );
+                                                }
+                                                jq('#header_menu').show(); // show after USI checked
+                                        };
+
+                                        // hide initially
+                                        jq('#header_menu').hide();
+
+                                        // check if zkp loaded before toggling widget
+                                        if(JSON.stringify(zkpConfig)==='{}' || typeof zkpConfig==='undefined') {
+                                                jq(document).on('load.footerbundle', function() {
+                                                        ev_USILoginWidget();
+                                                });
+                                        } else {
+                                                ev_USILoginWidget();
+                                        }
+                                        // END DISC-583
+                                }
+
+        //DISC-23 / EV-16287 - ADA fix : move the end div tag into script since #header_menu opening div tag was moved in
+        document.write(
+            '</div>'
+        );
+
+
+                //Fix input element click problem
+                jq('.dropdown-menu input, .dropdown-menu label').click(function(e) {
+                        e.stopPropagation();
+        });
+
+        //EV-16179 - Auto focus to email input field if dropdown is opened
+        jq('#header_menu .login-dropdown-container').on('show.bs.dropdown', function () {
+            var self =  this;
+            //need a delay
+            setTimeout(function() {
+                jq(self).find('#email').focus()
+            }, 500);
+        });
+                </script>
+
+<script type="text/javascript">
+
+        if(
+                regAdminInfo.loginMode != "D" &&
+                common.loggedIn &&
+                shopperInfo.first != "" &&
+                shopperInfo.last != ""
+        ) {
+                document.write(
+            '<div id="login">Welcome ', shopperInfo.first ? shopperInfo.first : '' ,' ', shopperInfo.last ? shopperInfo.last : '' ,'!</div>'
+                );
+        }
+
+</script>
+
+        </div>
+
+</div>
+
+<div id="topmenu" role="navigation"></div>
+
+<script>
+        //netCommerceNavLinks - populate all nav links
+        jq.getScript('/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/netCommerce/netCommerceNav.js');
+</script>
+
+        <div id="content" role="main" aria-label="main content" tabindex="-1">
+        <script>
+                // DISC-398, 684 (netCommerceNavLinks - populate all nav links)
+                if( typeof et.siteConfig!=='undefined' &&
+                typeof et.siteConfig.features!=='undefined' &&
+                typeof et.siteConfig.features.nGNav!=='undefined' &&
+                et.siteConfig.features.nGNav){
+                        jQuery('#ev_BrandContainer div.logo').hide();
+                        jQuery('#banner-responsive,#topmenu').remove();
+                        jQuery('#container').css('padding-top','0');
+                        jQuery('#banner').attr('style', 'position: relative !important;display: block !important');
+                        jQuery('#superSearchModule_m,#superSearchModule').hide()
+                        jQuery.getScript('https://pachtml-production.s3.us-west-2.amazonaws.com/global/nextgen_navigation/dist/bundle.js');
+
+                }
+
+                // DISC-874
+                if (typeof zkpConfig["feature.evenuenext.styleNC"] !== 'undefined' && zkpConfig["feature.evenuenext.styleNC"] == 1) {
+                        console.log("nextGen content css enabled, apply css to content");
+                        // DISC-547
+                        jQuery('body').addClass('nextgen');
+                        jQuery('head').append('<link rel="stylesheet" href="/www/ev_tktldr/ss/evenue/customize/shared/css/nextgen.css" type="text/css" />');
+                } else {
+                        console.log("nextGen content css is NOT enabled, do nothing");
+                }
+        </script>
+
+    <!-- EV-1347, must appear after subheader -->
+
+
+<!-- ==================================================
+        END HEADER
+=================================================== -->
+
+<script type="text/javascript">
+
+        // printHead("sorry", navHead);
+
+        // PAC-18817
+        if(error.url==="/evenue/evenue15/se/index.html" || error.url==="/evenue/evenue15/se/") {
+                error.url = createNavigateHref("MAIN");
+        }
+
+</script>
+
+
+<div align="center">
+  <!-- _everror.inc -->
+  <p>&nbsp;</p>
+  <script type="text/javascript">
+
+    var regex     = /.*has no applications available online.  Please call ticket office for further processing/;
+    var errortext = error.msg;
+    var result    = errortext.match(regex);
+
+    if(result) {
+      document.write(
+        '<p class="error">Sorry, you currently have no applications available online.</p>',
+        '<p>If you have received your invoice in the mail, ',
+        '  <a href="/cgi-bin/ncommerce3/EVExecMacro?linkID=tktldr&evm=rega&linkSource=SR','&url=', encodeURIComponent(createNavigateHref("SR")), '">click here</a> to link your account ',
+        '  and view your applications online. ',
+        '  You will need your Customer Number and PIN which can be found above your name on your invoice.</p>'
+      );
+    } else if (error.msg == "Ballena cart exists"){
+      if (typeof window.sessionStorage === "object") {
+        if (sessionStorage.getItem("ballenaId")) {
+          var bId= sessionStorage.getItem("ballenaId");
+          var rurl = "/www/ev_tktldr/ss/evenue/?p=1#EvNavigation?action=CH&cartType=T&ballena=bId&siteId=ev_tktldr&linkID=tktldr&locale=en_US#/level_1/my_account/";
+          document.write(
+            '<p class="error">', error.msg, '</p>',
+            '<p><a href="', rurl, '"> Return to Payment</a>.</p>'
+          );
+        }
+        else {
+          var rurl = "/www/ev_tktldr/ss/evenue/?p=1#MyAccount?siteId=ev_tktldr&locale=en_US&linkID=tktldr";
+          error.msg = "This process is not allowed with a current order in your shopping cart. Please complete or cancel your current order, or logout and try again.";
+          document.write(
+            '<p class="error">', error.msg, '</p>',
+            '<p><a href="', rurl, '"> Return to My Account</a>.</p>'
+          );
+        }
+      }
+      else {
+        var rurl = "/www/ev_tktldr/ss/evenue/?p=1#MyAccount?siteId=ev_tktldr&locale=en_US&linkID=tktldr";
+        error.msg = "This process is not allowed with a current order in your shopping cart. Please complete or cancel your current order, or logout and try again.";
+        document.write(
+          '<p
+class="error">', error.msg, '</p>',
+          '<p><a href="', rurl, '"> Return to My Account</a>.</p>'
+        );
+      }
+    } else {
+      // reload site code - part 2 of 2
+      if(error.msg == "The inventory is set OFFLINE. Please contact eVenue system administrator for further information"){
+        document.write(
+          '<p class="error">Please wait while we update event information. This process only takes a few minutes.</p>',
+          '<img src="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/images/waitani.gif" onload="JavaScript:timedRefresh(30000);">'
+        );
+      } else if (error.msg.indexOf("Your reservations have expired|") != -1) {
+          document.write(
+          '<p class="error">Your reservations have expired</p>'
+        );
+        var sCartId, sOrderId;
+        sCartId = error.msg.split("|")[1];
+        sOrderId = error.msg.split("|")[2];
+        console.log("The expired shared cart has cartId and orderId as: " + sCartId + " and " + sOrderId);
+        console.log("Canceling existing shared cart...");
+        var rjson;
+        rjson = {
+            "cartId": sCartId,
+            "orderId": sOrderId
+          };
+        et.resolvePoolId("ev_tktldr").done(function(p_poolId)
+        {
+          et.cancelEvrxCart(p_poolId, "ev_tktldr", "en_US", rjson).done(function(data)
+          {
+            if(data.status.cd == 0)
+            {
+              if(data.status.mg != "successful" && data.status.mg != null){
+                alert(JSON.stringify(data.status.mg))
+              }
+              else{
+                //Do nothing here.
+              }
+            }
+            else
+            {
+              alert("Cancel shared cart service call failed" + " - " + data.status.mg);
+            }
+          }).fail(function(data)
+          {
+            alert("Cancel shared cart service call failed");
+          });
+        }).fail(function(data)
+        {
+          alert("Failed to resolve pool ID.");
+        });
+      } else {
+        document.write(
+          '<p class="error">', error.msg.replace('Click on the \'package items\' link above to access your current package.','<br>Click on the Shopping Cart timer to access your current package.'), '</p>',
+          '<p>If you want to try again, click <a href="', error.url, '"> here</a>.</p>'
+        );
+      }
+    }
+
+  </script>
+</div>
+<!-- ==================================================
+        END MAIN CONTENT
+=================================================== -->
+
+        <!-- Move ev_tag_manager.js up here so evTags object can be used when needed-->
+        <script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/pixels/ev_tag_manager.js"></script>
+
+
+                        </div> <!-- content / cart-page -->
+
+                        <div id="footer" role="contentinfo">
+                                <div id="browserReq" style="display:none;">
+                                        <div class="text-center">
+                                                <p class="text-left"><span class="bold-text">Browser Requirements</span><br>
+                                                        This site supports the current versions of the browsers listed below. Using older browsers, non-compatible
+                                                        browsers, or disabling browser features (such as Javascript, cookies and SSL), will reduce site functionality.</p>
+
+                                                <p>To download a browser, click on one of the following icons.<br><br>
+                                                        <a href="http://www.microsoft.com/windows/internet-explorer/" target="_blank"><img src="/www/ev_tktldr/ss/evenue/customize/shared/images/browserIcons/ie.png"
+                                                                class="border-0" alt="Download Microsoft Internet Explorer"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <a href="http://www.apple.com/safari/" target="_blank"><img src="/www/ev_tktldr/ss/evenue/customize/shared/images/browserIcons/safari.png" class="border-0" alt="Download Safari"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <a href="http://www.mozilla.com/en-US/firefox/" target="_blank"><img src="/www/ev_tktldr/ss/evenue/customize/shared/images/browserIcons/firefox.png" class="border-0"
+                                                                alt="Download Firefox"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <a href="https://www.google.com/chrome" target="_blank"><img src="/www/ev_tktldr/ss/evenue/customize/shared/images/browserIcons/chrome.png" class="border-0" alt="Download Chrome"></a></p>
+                                        </div>
+                                </div>
+
+                                <div id="logoOuterWrapper"></div>
+
+                                <p class="buttonSet">
+                                        <a class="hdr_site_security" href="javascript:void(showBox('//media.paciolan.com/evenue/Common/evData/site_security/site-security.html', 'Security Information', 700, 500, 1))">Site Security</a>
+                                        <a class="hdr_browser_req" href="#">Browser Requirements</a>
+                                        <a class="hdr_privacy_policy" href="javascript:;" target="_blank">Privacy Policy</a>
+                                </p>
+                        </div>
+
+        </div> <!-- container -->
+</div> <!-- end of wrap -->
+
+<footer class="footer">
+        <div class="footer-ticket-bg"></div>
+        <div class="footer_holder clearfix">
+                <div class="footer_nav">
+                        <ul>
+                                <li class="page_26 "><a href="https://www.ticketleader.ca/plan-your-visit">Plan Your Visit</a></li>
+                                <li class="page_27 "><a href="https://www.ticketleader.ca/about">About</a></li>
+                                <li class="page_28 "><a href="https://www.ticketleader.ca/ticket-your-events">Ticket Your Events</a></li>
+                                <li class="page_29 "><a href="https://www.ticketleader.ca/frequently-asked-questions">Frequently Asked Questions</a></li>
+                                <li class="page_30 "><a href="https://www.ticketleader.ca/contact-us">Contact Us</a></li>
+                        </ul>
+                </div>
+                <div class="footer-right">
+                        <div class="footer-right-wrapper">
+                                <div class="footer_logo">
+                                        <div class="logo"><a href="https://www.ticketleader.ca/" title="Ticket Leader">Ticket Leader</a></div>
+                                </div>
+                                <div class="venue_info">
+                                        <div class="email"><span>E-mail: </span><a href="mailto:info@ticketleader.ca">info@ticketleader.ca</a></div>
+                                        <div class="phone"><span>Phone: </span>1-604-252-3700</div>
+                                </div>
+                                <div class="m-social-links">
+                                        <a href="https://www.facebook.com/ticketleader" title="facebook" target="_blank" class="fa fa-facebook"><span class="hidden">Facebook</span></a><a href="https://www.twitter.com/ticketleader" title="twitter" target="_blank" class="fa fa-twitter"><span class="hidden">Twitter</span></a><a href="https://www.instagram.com/ticketleader" title="instagram" target="_blank" class="fa fa-instagram"><span class="hidden">Instagram</span></a>
+                                </div>
+                                <!--<a href="http://www.carbonhouse.com" title="a carbonhouse experience" id="carbonhouse" target="_blank">a <span class="carbon">carbon</span><span class="house">house</span> experience</a>-->
+                        </div>
+                </div>
+                <div class="global-footer">
+                        <p>
+                                COPYRIGHT &copy; 2019 Ticket Leader. All rights reserved.
+                                <span class="delimiter first_delimiter">|</span>
+                                <a href="https://www.ticketleader.ca/accessibility" style="font-weight: 500;">Accessibility</a>
+                                <span class="delimiter">|</span>
+                                <a href="https://www.ticketleader.ca/privacy-policy" style="font-weight: 500;">Privacy Policy</a>
+                                <span class="delimiter">|</span>
+                                <a href="https://www.ticketleader.ca/sitemap" style="font-weight: 500;">Site Map</a>
+                                <a href="http://www.carbonhouse.com" title="a carbonhouse experience" id="carbonhouse2" class="chmobile" target="_blank">a <span class="carbon">carbon</span><span class="house">house</span> experience</a>
+                        </p>
+                </div>
+        </div>
+</footer>
+
+<script type="text/javascript">
+        //Force favicon
+        (function() {
+                var link = document.createElement('link');
+                link.type = 'image/x-icon';
+                link.rel = 'shortcut icon';
+                link.href = '/www/ev_tktldr/ss/evenue/customize/ev_tktldr/images/desktop/faviconV2.png';   // change to AWS?
+                document.getElementsByTagName('head')[0].appendChild(link);
+        }());
+
+        var isMediaGA = true; //Keep this true if using google_analytics.js from media server; change to false when the client has other customized google_analytics.js
+        //jq.getScript('/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/google_analytics.js');
+
+</script>
+
+<!-- Load banner objects and auto-run carouselBanner -->
+<script type="text/javascript" src="/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/netCommerce/customization/bannerData.js?timestamp=20221230""></script><!--
+        Bootstrap modal's HTML
+        Placed at the end of the document so the pages load faster
+
+        1. since only one modal markup, it's using only one id, so when the mocal called a modal with an id of "showbox-modal-dialog" will appear
+        2. id of "lbContainer" will generate when the modal called, so only will empty content of "lbContainer" when modal closed
+-->
+<div class="modal fade modal-center" id="showbox-modal-dialog" tabindex="-1" role="dialog" aria-labelledby="showbox-modal-dialog" aria-hidden="true">
+        <div class="modal-dialog modal-center modal-size">
+                <div tabindex="-1" class="modal-content modal-size">
+                        <div class="div-close-button">
+
+                        <button type="button" class="closeX ev-close-button" data-dismiss="modal" aria-label="Close lightbox" onclick="removeBox();">&times;</button>
+                        </div>
+                        <div class="modal-header">
+                <h4 class="modal-title" id="modal-label"><!-- Title goes here --></h4>
+            </div>
+                        <div class="modal-body"><!-- content goes here --></div>
+                        <div class="modal-footer"></div>
+                </div>
+        </div>
+</div>
+<!-- DO NOT REMOVE -->
+<script>
+        // DISC-328 (load browser requirements from AWS)
+        jq('#browserReq').load(
+                'https://pachtml-production.s3.us-west-2.amazonaws.com/global/info/browserReq.html'
+        );
+
+         //ADA update - form needs submit button but some forms we don't submit, so preventDefault
+          jq('[type="submit"][ev-stopsubmit="true"]').on('click', function(e) {
+                  e.preventDefault();
+          });
+
+        // Template update - enter click event simulates a click event for keyboard navigation
+        jq('input[type="checkbox"]').keypress(function(e) { if (e.keyCode === 13) { jq(this).trigger('click'); } });
+
+</script>
+
+<script type="text/javascript">
+        var ev_gaTrack = function() {}; // init for ad blockers
+        // set version sstorage
+        sessionStorage.setItem("ev_Version", "05.221129");
+
+        if (typeof(isMediaGA)=='undefined' || isMediaGA) jq.getScript('https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/pixels/google_analytics.js?ev_version='+sessionStorage.getItem('ev_Version'));
+</script>
+
+        <script type="text/javascript" src='https://pac-media.s3.us-west-2.amazonaws.com/common/legacy/scripts/pixels/dataLayerGTM.js'></script>
+        <script type="text/javascript" src='/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/pixels.js?timestamp=01_20221230'></script>
+        <script type="text/javascript" src="https://pac-media.s3-us-west-2.amazonaws.com/common/legacy/scripts/Spectra_Logo/powered-by-widget-svg.js"></script>
+
+        <!-- SEARCH MODULE LOAD - search config must be loaded before the searchmodule-->
+        <script type="text/javascript">
+                if(jq("#superSearchModule, #superSearchModuleExpandable").length>0) {
+                        getScript("/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/global/searchConfig.min.js", function() {
+                                getScript("/www/ev_tktldr/ss/evenue/customize/shared/js/searchModuleV1.js");
+                        });
+                }
+                //EV16190, DISC-55
+                if(jq("#superSearchModule_m, #superSearchModuleExpandable_m").length>0) {
+                        if(typeof searchOptions!='undefined'){
+                                getScript("/www/ev_tktldr/ss/evenue/customize/ev_tktldr/script/global/searchConfig.min.js", function() {
+                                    getScript("/www/ev_tktldr/ss/evenue/customize/shared/js/searchModuleV1_m.js");
+                            });
+                        } else {
+
+                                getScript("/www/ev_tktldr/ss/evenue/customize/shared/js/searchConfig.min.js", function() {
+                                        getScript("/www/ev_tktldr/ss/evenue/customize/shared/js/searchModuleV1_m.js");
+                                });
+                        }
+
+                }
+        //end EV16190, DISC-55
+    // update private policy
+    jq('a.hdr_privacy_policy').attr('href', et.privacy_policy);
+
+        </script>
+
+    <script type="text/javascript">
+        //The session timer is in the footer_bundle.js
+        //DISC-42 / EV-16294 - load the footer_bundle.js file
+        //This is in load.footerbundle event so zkpConfig will always be loaded (success or fail)
+        //when it tries to load footer_bundle
+        jq(document).on('load.footerbundle', function() {
+            var commonMediaFooterBundle = '/dist/footer_bundle.js';
+            var footerBundleUrl = commonLibPath + '/' + commonMediaVersionFallback + commonMediaFooterBundle;
+            if (commonOverrideUrl !== '') {
+                footerBundleUrl = commonOverrideUrl+commonMediaFooterBundle
+            }
+            else if (typeof zkpConfig['evenue.common.version'] !== 'undefined') {
+                footerBundleUrl = commonLibPath + '/' + zkpConfig['evenue.common.version'] + commonMediaFooterBundle;
+            }
+
+            jq.getScript(footerBundleUrl, function(resp) {
+                // console.log('footer_bundle loaded')
+            });
+        });
+        jq(document).on('evenueconfig.loaded', function() {
+            // console.log('evenueconfig.loaded action triggered');
+        });
+    </script>
+
+        <script type="text/javascript">
+        //ACCT-1246, ACCT-1319 - start: amplitude student log in tracking success
+        if(sessionStorage.getItem("successLoginST") === "yes" ){
+                sessionStorage.removeItem("successLoginST");
+                if (typeof _pacAnalytics !== 'undefined'){
+                        _pacAnalytics.send({
+                                label: "sign in",
+                                eventProperties: {
+                                page: "student tickets",
+                                method: "netcommerce",
+                                status: "success"
+                                }
+                        });
+                }
+        }
+        //ACCT-1246 - end
+        </script>
+
+        <!-- lightbox chronos tool support script -->
+        <script type="text/javascript" src="https://pachtml-production.s3-us-west-2.amazonaws.com/global/chronos_lb_tool/lightbox.js"></script>
+
+
+</body>
+<!-- ==================================================
+        END FOOTER
+=================================================== -->
+</html>
